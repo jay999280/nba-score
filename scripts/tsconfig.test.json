@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "..",
+    "rootDir": "../src",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "declaration": false,
+    "skipLibCheck": true
+  },
+  "include": ["../src/lib/nba/reminders.ts"]
+}

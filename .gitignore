@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+build
+.env*
+!.env.example
+# Local push subscription store (endpoint URLs — never commit).
+data/
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+_probe

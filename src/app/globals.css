@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Design tokens — Minimal / Calm / Premium / Sports (PRD §18)
+ *
+ * White is the primary surface; dark stays one tap away on the same token
+ * structure, so both themes keep identical hierarchy.
+ *
+ * Tertiary text and the live accent are pinned to ≥4.5:1 against their
+ * surfaces (measured, 2026-10-06): ink-3 light 4.99, ink-3 dark 5.81,
+ * live light 5.47, live dark 5.81.
+ * ------------------------------------------------------------------ */
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-live: var(--live);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --radius-card: 14px;
+}
+
+:root {
+  color-scheme: light;
+
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --elevated: #f4f4f5;
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.16);
+  --ink: #0b0b0c;
+  --ink-2: #6b6b70;
+  --ink-3: #6f6f76;
+  --live: #c62f27;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --elevated: #171717;
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --ink: #f2f2f2;
+  --ink-2: #9c9ca1;
+  --ink-3: #8e8e96;
+  --live: #ff453a;
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--line);
+  }
+
+  html {
+    background-color: var(--bg);
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    letter-spacing: normal;
+    overscroll-behavior-y: none;
+  }
+
+  ::selection {
+    background: var(--line-strong);
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Motion — small, quiet, and never on the scroll path (PRD §21)
+ * ------------------------------------------------------------------ */
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes score-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-rise {
+  animation: rise-in 0.2s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@utility animate-fade {
+  animation: fade-in 0.2s ease-out both;
+}
+
+@utility animate-breathe {
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+@utility animate-score {
+  animation: score-in 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* The eyebrow type used for status lines and section headers. */
+@utility eyebrow {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 590;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Table column headers: a step smaller so eight columns fit a 375px screen. */
+@utility col-label {
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 520;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
