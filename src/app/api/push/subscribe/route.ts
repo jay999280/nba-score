@@ -23,10 +23,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid subscription or settings" }, { status: 400 });
   }
 
-  const store = loadStore();
+  const store = await loadStore();
   store.subscription = subscription;
   store.settings = settings;
-  saveStore(store);
+  await saveStore(store);
   ensureScheduler();
 
   return NextResponse.json({ ok: true });

@@ -19,20 +19,20 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Invalid settings" }, { status: 400 });
   }
 
-  const store = loadStore();
+  const store = await loadStore();
   if (!store.subscription) {
     return NextResponse.json({ error: "Not subscribed" }, { status: 404 });
   }
 
   store.settings = settings;
-  saveStore(store);
+  await saveStore(store);
   return NextResponse.json({ ok: true });
 }
 
 /** DELETE /api/push/subscription — forget the browser entirely. */
 export async function DELETE() {
-  const store = loadStore();
+  const store = await loadStore();
   store.subscription = null;
-  saveStore(store);
+  await saveStore(store);
   return NextResponse.json({ ok: true });
 }

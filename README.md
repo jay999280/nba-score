@@ -86,6 +86,22 @@ v0.1 不含：新闻、视频、评论、博彩、推送、登录、数据库。
 | 通知体验 | SW 显示通知（标题＋比分＋球队图标），点通知直达比赛详情页，同场同类只保留一条 |
 | 测试 | 调度决策是纯函数，`node scripts/test-reminders.mjs` 20 项单测；订阅全链路 Playwright E2E（沙箱无推送服务密钥，握手一环用桩代替） |
 
+## 部署到 Vercel（手机随时看）
+
+本地 `pnpm start` 关机即停；部署后手机在任何网络都能看，且 https 让手机推送真正可用。
+
+1. GitHub 仓库 Import 到 Vercel（Next.js 默认配置即可，无需改代码）
+2. Environment Variables 填四个值（格式见 `.env.example`）：
+   `NEXT_PUBLIC_VAPID_PUBLIC_KEY`、`VAPID_PRIVATE_KEY`、`VAPID_SUBJECT`，以及随机生成的 `CRON_SECRET`
+3. Storage → Create → KV，Vercel 会自动注入 `KV_REST_API_URL` / `KV_REST_API_TOKEN`；
+   有它就走 KV 持久化订阅，没有就回落成本地文件（本地开发零配置）
+4. 提醒调度：在 cron-job.org 建一个每分钟任务，GET
+   `https://<你的域名>/api/push/check?secret=<CRON_SECRET>`
+  （Vercel Cron 也行，但免费版频率受限；本地开发不需要这一步，进程内 timer 会自己跑）
+
+注意：serverless 没有常驻进程，所以生产环境不会启动进程内 timer（`store: "kv"` 可在
+`/api/push/status` 确认）；`push.json` 只用于本地开发。
+
 注意：Web Push 需要安全上下文——`localhost` 可用，局域网 `http://` 不可用。手机上要收提醒需要一次 https 部署（如 Vercel），本地只能在电脑浏览器验证订阅流程。
 
 ### 语言说明

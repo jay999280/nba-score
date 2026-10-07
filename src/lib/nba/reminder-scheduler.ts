@@ -40,7 +40,7 @@ export async function checkRemindersOnce(nowMs = Date.now()): Promise<{
   checked: number;
   sent: number;
 }> {
-  const store = loadStore();
+  const store = await loadStore();
   if (!store.subscription || !store.settings.enabled) return { checked: 0, sent: 0 };
   const details = vapidDetails();
   if (!details) return { checked: 0, sent: 0 };
@@ -84,11 +84,14 @@ export async function checkRemindersOnce(nowMs = Date.now()): Promise<{
     store.notified[reminder.gameId] = kinds;
   }
 
-  if (due.length > 0) saveStore(store);
+  if (due.length > 0) await saveStore(store);
   return { checked: games.length, sent };
 }
 
 export function ensureScheduler(): boolean {
+  // Serverless has no long-lived process: reminders are triggered externally
+  // via GET /api/push/check (cron). Only self-hosted servers run the timer.
+  if (process.env.VERCEL) return false;
   const global = globalThis as SchedulerGlobal;
   if (global.__nbaReminderTimer) return true;
   const tick = () => {

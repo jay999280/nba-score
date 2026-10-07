@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { loadStore } from "@/lib/nba/reminder-store";
+import { loadStore, storeBackend } from "@/lib/nba/reminder-store";
 import { schedulerRunning } from "@/lib/nba/reminder-scheduler";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
  * The private key and the endpoint URL never leave the server.
  */
 export async function GET() {
-  const store = loadStore();
+  const store = await loadStore();
   return NextResponse.json(
     {
       configured: Boolean(
@@ -20,6 +20,7 @@ export async function GET() {
       subscribed: store.subscription !== null,
       settings: store.subscription ? store.settings : null,
       scheduler: schedulerRunning(),
+      store: storeBackend(),
     },
     { headers: { "Cache-Control": "no-store" } },
   );
