@@ -3,6 +3,8 @@
 import Link from "next/link";
 
 import { CountdownText } from "./countdown-text";
+import { LiveClock } from "./live-clock";
+import { periodLabel } from "@/lib/format";
 import type { Game, TeamSide } from "@/lib/types";
 import { Score } from "./score";
 import { TeamLogo } from "./team-logo";
@@ -18,6 +20,11 @@ interface GameCardProps {
    */
   spoilerHidden?: boolean;
   onReveal?: () => void;
+  /**
+   * Epoch ms of the payload this card renders. The live clock remounts on
+   * every poll so it resyncs instead of drifting.
+   */
+  updatedAtMs?: number;
 }
 
 /**
@@ -26,7 +33,7 @@ interface GameCardProps {
  * Zero score is never shown for a game that has not started (PRD §8.3), and
  * the whole card stays inside the 90–130px budget of PRD §10.
  */
-export function GameCard({ game, favoriteColor = null, spoilerHidden = false, onReveal }: GameCardProps) {
+export function GameCard({ game, favoriteColor = null, spoilerHidden = false, onReveal, updatedAtMs }: GameCardProps) {
   const settled = game.status === "final" && !spoilerHidden;
 
   return (
@@ -65,7 +72,7 @@ export function GameCard({ game, favoriteColor = null, spoilerHidden = false, on
       </div>
 
       <div className="mt-3 flex h-4 items-center">
-        <StatusLine game={game} hidden={spoilerHidden} />
+        <StatusLine game={game} hidden={spoilerHidden} updatedAtMs={updatedAtMs} />
       </div>
     </Link>
   );
@@ -102,7 +109,7 @@ function TeamRow({ team, settled, hidden = false }: { team: TeamSide; settled: b
   );
 }
 
-function StatusLine({ game, hidden = false }: { game: Game; hidden?: boolean }) {
+function StatusLine({ game, hidden = false, updatedAtMs }: { game: Game; hidden?: boolean; updatedAtMs?: number }) {
   if (hidden) {
     return (
       <span className="flex items-center gap-1.5">
@@ -119,7 +126,13 @@ function StatusLine({ game, hidden = false }: { game: Game; hidden?: boolean }) 
         <span className="animate-breathe size-1.5 rounded-full bg-live" />
         <span className="eyebrow text-live">进行中</span>
         <span className="text-[11px] leading-none text-ink-3">·</span>
-        <span className="eyebrow text-ink-2">{game.statusText}</span>
+        {game.clock && game.period > 0 && updatedAtMs ? (
+          <span className="eyebrow text-ink-2">
+            {periodLabel(game.period)} · <LiveClock key={updatedAtMs} clock={game.clock} />
+          </span>
+        ) : (
+          <span className="eyebrow text-ink-2">{game.statusText}</span>
+        )}
       </span>
     );
   }

@@ -6,9 +6,12 @@ import { localDateKey, localDayWindow } from "@/lib/format";
 import type { GameDetailResponse, GamesResponse, PlaysResponse } from "@/lib/types";
 import { usePolledResource, type ResourceState } from "./use-polled-resource";
 
-/** Live games move fastest, games about to tip off move slowly, finals never do. */
-const POLL_LIVE_MS = 12_000;
+/** Live games move fastest; tip-off watch catches the flip promptly. */
+const POLL_LIVE_MS = 6_000;
 const POLL_UPCOMING_MS = 60_000;
+const POLL_TIPOFF_MS = 15_000;
+/** Games tipping within this window get watched closely. */
+const TIPOFF_WINDOW_MS = 10 * 60_000;
 
 /** Nothing emits date changes; the snapshot re-reads the clock when asked. */
 const subscribeToNothing = () => () => {};
@@ -34,7 +37,19 @@ export function useGames(dateKey: string | null): ResourceState<GamesResponse> {
   }, [dateKey]);
 
   const nextDelay = useCallback((data: GamesResponse) => {
+    const now = Date.now();
     if (data.games.some((game) => game.status === "live")) return POLL_LIVE_MS;
+    if (
+      data.games.some(
+        (game) =>
+          game.status === "upcoming" &&
+          !game.postponed &&
+          Date.parse(game.startTime) - now < TIPOFF_WINDOW_MS &&
+          Date.parse(game.startTime) - now > -30 * 60_000,
+      )
+    ) {
+      return POLL_TIPOFF_MS;
+    }
     if (data.games.some((game) => game.status === "upcoming")) return POLL_UPCOMING_MS;
     return null;
   }, []);
@@ -49,6 +64,13 @@ export function useGames(dateKey: string | null): ResourceState<GamesResponse> {
 export function useGameDetail(gameId: string): ResourceState<GameDetailResponse> {
   const nextDelay = useCallback((data: GameDetailResponse) => {
     if (data.game.status === "live") return POLL_LIVE_MS;
+    if (
+      data.game.status === "upcoming" &&
+      !data.game.postponed &&
+      Date.parse(data.game.startTime) - Date.now() < TIPOFF_WINDOW_MS
+    ) {
+      return POLL_TIPOFF_MS;
+    }
     if (data.game.status === "upcoming") return POLL_UPCOMING_MS;
     return null;
   }, []);

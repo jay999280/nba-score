@@ -87,7 +87,7 @@ export default function GamePage() {
         <>
           {/* Outside the animate-rise wrapper on purpose: a retained animation
               transform would hijack this fixed bar's containing block. */}
-          <StickyGameBar game={game} visible={pastHeader} hideScores={hidden} />
+          <StickyGameBar game={game} visible={pastHeader} hideScores={hidden} updatedAtMs={updatedAt?.getTime()} />
           <div className="animate-rise flex flex-col gap-8">
             <div ref={headerRef}>
               <ScoreHeader
@@ -95,6 +95,7 @@ export default function GamePage() {
                 hideScores={hidden}
                 favorites={favorites.favoriteSet}
                 onToggleFavorite={handleToggleFavorite}
+                updatedAtMs={updatedAt?.getTime()}
               />
             </div>
 

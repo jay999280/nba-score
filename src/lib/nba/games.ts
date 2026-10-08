@@ -22,11 +22,11 @@ import { SOURCE, UpstreamError, fetchSource, primeSource } from "./source";
 /** The scoreboard is shared by every visitor, so the freshest copy is enough. */
 const SCOREBOARD_TTL_SECONDS = 5;
 /** In-game box scores move on every possession. */
-const BOXSCORE_LIVE_TTL_SECONDS = 10;
+const BOXSCORE_LIVE_TTL_SECONDS = 5;
 /** A finished box score is immutable. */
 const BOXSCORE_FINAL_TTL_SECONDS = 60 * 60;
 /** Play-by-play arrives possession by possession, like the box score. */
-const PLAYS_LIVE_TTL_SECONDS = 10;
+const PLAYS_LIVE_TTL_SECONDS = 5;
 /** A finished play-by-play never changes again. */
 const PLAYS_FINAL_TTL_SECONDS = 60 * 60;
 

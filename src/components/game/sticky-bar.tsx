@@ -1,7 +1,8 @@
 "use client";
 
-import { formatLocalTime } from "@/lib/format";
+import { formatLocalTime, periodLabel } from "@/lib/format";
 import type { Game } from "@/lib/types";
+import { LiveClock } from "../live-clock";
 import { TeamLogo } from "../team-logo";
 
 interface StickyGameBarProps {
@@ -13,6 +14,8 @@ interface StickyGameBarProps {
    * hidden result exists nowhere in the DOM — not even in an invisible node.
    */
   hideScores?: boolean;
+  /** Epoch ms of the payload, so the live clock resyncs on every poll. */
+  updatedAtMs?: number;
 }
 
 /**
@@ -23,7 +26,7 @@ interface StickyGameBarProps {
  * no layout shift — and `prefers-reduced-motion` (see globals.css) makes the
  * swap instant.
  */
-export function StickyGameBar({ game, visible, hideScores = false }: StickyGameBarProps) {
+export function StickyGameBar({ game, visible, hideScores = false, updatedAtMs }: StickyGameBarProps) {
   const awayMuted = game.status === "final" && !game.away.winner;
   const homeMuted = game.status === "final" && !game.home.winner;
 
@@ -49,7 +52,15 @@ export function StickyGameBar({ game, visible, hideScores = false }: StickyGameB
           {game.status === "live" ? (
             <span className="animate-breathe size-1.5 shrink-0 rounded-full bg-live" />
           ) : null}
-          <span className="eyebrow truncate text-ink-3">{barStatus(game)}</span>
+          <span className="eyebrow truncate text-ink-3">
+            {game.status === "live" && game.clock && game.period > 0 && updatedAtMs ? (
+              <span>
+                {periodLabel(game.period)} · <LiveClock key={updatedAtMs} clock={game.clock} />
+              </span>
+            ) : (
+              barStatus(game)
+            )}
+          </span>
         </span>
 
         <span className="flex min-w-0 flex-1 items-center justify-end gap-1.5">

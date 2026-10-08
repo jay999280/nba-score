@@ -19,6 +19,8 @@ interface GameSectionsProps {
   spoilerEnabled: boolean;
   isRevealed: (gameId: string) => boolean;
   onReveal: (gameId: string) => void;
+  /** Epoch ms of the payload, so live clocks resync on every poll. */
+  updatedAtMs?: number;
 }
 
 /**
@@ -26,7 +28,7 @@ interface GameSectionsProps {
  * comes first — that is the entire effect of favorites in v0.1 (PRD §7, §16).
  * A section with no games renders nothing at all.
  */
-export function GameSections({ games, favorites, spoilerEnabled, isRevealed, onReveal }: GameSectionsProps) {
+export function GameSections({ games, favorites, spoilerEnabled, isRevealed, onReveal, updatedAtMs }: GameSectionsProps) {
   const grouped = useMemo(() => {
     const buckets: Record<GameStatus, Game[]> = { live: [], upcoming: [], final: [] };
 
@@ -66,6 +68,7 @@ export function GameSections({ games, favorites, spoilerEnabled, isRevealed, onR
                     spoilerEnabled && game.status === "final" && !isRevealed(game.id)
                   }
                   onReveal={() => onReveal(game.id)}
+                  updatedAtMs={updatedAtMs}
                 />
               ))}
             </div>

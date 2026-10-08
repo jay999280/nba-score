@@ -123,6 +123,7 @@ export default function HomePage() {
           spoilerEnabled={spoiler.enabled}
           isRevealed={spoiler.isRevealed}
           onReveal={spoiler.reveal}
+          updatedAtMs={games.updatedAt?.getTime()}
         />
       </div>
     );

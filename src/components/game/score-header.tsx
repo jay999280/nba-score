@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { periodLabel } from "@/lib/format";
 import type { Game, GameStatus, TeamSide } from "@/lib/types";
 import { CountdownText } from "../countdown-text";
+import { LiveClock } from "../live-clock";
 import { StarIcon } from "../icons";
 import { Score } from "../score";
 import { TeamLogo } from "../team-logo";
@@ -18,11 +19,13 @@ export function ScoreHeader({
   hideScores = false,
   favorites,
   onToggleFavorite,
+  updatedAtMs,
 }: {
   game: Game;
   hideScores?: boolean;
   favorites: Set<number>;
   onToggleFavorite: (teamId: number) => void;
+  updatedAtMs?: number;
 }) {
   return (
     <div className="flex flex-col gap-5">
@@ -54,7 +57,7 @@ export function ScoreHeader({
           />
         </div>
       </div>
-      <DetailStatusLine game={game} />
+      <DetailStatusLine game={game} updatedAtMs={updatedAtMs} />
     </div>
   );
 }
@@ -112,14 +115,20 @@ function TeamColumn({
   );
 }
 
-function DetailStatusLine({ game }: { game: Game }) {
+function DetailStatusLine({ game, updatedAtMs }: { game: Game; updatedAtMs?: number }) {
   if (game.status === "live") {
     return (
       <div className="flex items-center justify-center gap-2">
         <span className="animate-breathe size-1.5 rounded-full bg-live" />
         <span className="eyebrow text-live">进行中</span>
         <span className="text-[11px] leading-none text-ink-3">·</span>
-        <span className="eyebrow text-ink-2">{game.statusText}</span>
+        {game.clock && game.period > 0 && updatedAtMs ? (
+          <span className="eyebrow text-ink-2">
+            {periodLabel(game.period)} · <LiveClock key={updatedAtMs} clock={game.clock} />
+          </span>
+        ) : (
+          <span className="eyebrow text-ink-2">{game.statusText}</span>
+        )}
       </div>
     );
   }

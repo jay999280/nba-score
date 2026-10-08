@@ -27,7 +27,7 @@ pnpm typecheck             # tsc --noEmit
 | --- | --- |
 | 首页 | `进行中 > 未开始 > 已结束`，空分区不渲染，卡片高约 114px |
 | 日期 | 左右箭头、系统日期选择器、手机左右滑动；默认今天 |
-| 进行中 | 红点 + `进行中 · 第4节 · 6:21`，每 12 秒刷新，红点轻微呼吸 |
+| 进行中 | 红点 + `进行中 · 第4节 · 6:21`，每 6 秒刷新，时钟每秒接着走，红点轻微呼吸 |
 | 未开始 | 显示本地开赛时间，绝不显示 `0 - 0` |
 | 已结束 | 弱化负方队名与队徽，比分保持清晰 |
 | 详情 | 比分 + 节次表，然后是「概览」（领衔球员、十四项球队数据）、「数据统计」（移动端优先的 8 列）、「动态」（走势图＋节次筛选＋事件流） |
@@ -55,7 +55,7 @@ v0.1 不含：新闻、视频、评论、博彩、推送、登录、数据库。
 | 事件流 | 最新在前，按节分组并显示该节结束比分；得分事件高亮＋队色圆点，其余弱化；`全部 / 第1节…` 筛选 |
 | 事件中文模板 | 罚球命中/投失按 `1 of 2` 显示第几罚；助攻＋出手距离进第二行；换人（常 100+ 条）与节次标记不进列表 |
 | 球队数据扩展 | 概览从 5 项扩到 14 项：罚球命中率、进攻篮板、抢断、盖帽、内线得分、快攻得分、利用失误得分、替补得分、最大领先 |
-| 数据接口 | `GET /api/games/[gameId]/plays`（事件＋走势＋投篮＋节次列表，未开赛返回 `available: false`）；详情页点开标签才请求，进行中每 12 秒轮询 |
+| 数据接口 | `GET /api/games/[gameId]/plays`（事件＋走势＋投篮＋节次列表，未开赛返回 `available: false`）；详情页点开标签才请求，进行中每 6 秒轮询 |
 
 ## v0.5 新增什么：投篮分布
 
@@ -182,9 +182,13 @@ hard-coded.
 
 ### Refresh policy
 
-Driven by what the payload contains: any live game → 12s, any upcoming game →
+Driven by what the payload contains: any live game → 6s, an upcoming game
+tipping within 10 minutes → 15s (tip-off watch), any other upcoming game →
 60s, everything final → polling stops. Regaining focus always refreshes once. The
 last good payload stays in memory, so returning to a date paints instantly.
+
+Live clocks tick locally every second between polls and resync on each
+response, so the displayed time never freezes for a whole interval.
 
 ## Verification
 
@@ -195,7 +199,7 @@ node _probe/test_format.ts                                  # parsing primitives
 python _probe/verify_zh.py                                  # 白底 + 中文：首页/日期/关注/详情/深色
 python _probe/verify_extra.py                               # favorites, persistence, swipe
 python _probe/verify_states.py                              # skeleton, error, retry, stale
-python _probe/verify_live.py                                # live card, section order, polling
+python _probe/verify_live.py                                # live card, ticking clock, 6s cadence, tip-off watch
 python _probe/verify_box.py                                 # box score fit at 375/390/430
 python _probe/verify_v02.py                                # v0.2：剧透、详情关注、滚动数字、PWA
 ```
