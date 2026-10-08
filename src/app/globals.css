@@ -77,10 +77,26 @@
     font-family: var(--font-sans);
     letter-spacing: normal;
     overscroll-behavior-y: none;
+    overflow-x: clip;
   }
 
   ::selection {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
     background: var(--line-strong);
+    border-radius: 8px;
+    border: 2px solid var(--bg);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 
   button {

@@ -53,7 +53,9 @@ export function GameSections({ games, favorites, spoilerEnabled, isRevealed, onR
 
         return (
           <section key={section.status} className="flex flex-col gap-2.5">
-            <h2 className="eyebrow sticky top-0 z-10 -mx-1 bg-bg px-1 py-2 text-ink-3">{section.title}</h2>
+            <h2 className="eyebrow sticky top-0 z-10 -mx-1 bg-bg px-1 py-2 text-ink-3">
+              {section.title} · {list.length}场
+            </h2>
             <div className="flex flex-col gap-2.5">
               {list.map((game) => (
                 <GameCard

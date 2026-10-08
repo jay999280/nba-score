@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 
-import { formatLocalTime, periodLabel } from "@/lib/format";
+import { periodLabel } from "@/lib/format";
 import type { Game, GameStatus, TeamSide } from "@/lib/types";
 import { CountdownText } from "../countdown-text";
 import { StarIcon } from "../icons";
@@ -26,21 +26,33 @@ export function ScoreHeader({
 }) {
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-start justify-between gap-6 pt-1">
-        <TeamColumn
-          team={game.away}
-          status={game.status}
-          hideScores={hideScores}
-          followed={favorites.has(game.away.id)}
-          onToggleFollow={() => onToggleFavorite(game.away.id)}
-        />
-        <TeamColumn
-          team={game.home}
-          status={game.status}
-          hideScores={hideScores}
-          followed={favorites.has(game.home.id)}
-          onToggleFollow={() => onToggleFavorite(game.home.id)}
-        />
+      <div className="relative">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div
+            className="absolute top-[-32px] left-[10%] size-36 rounded-full blur-3xl"
+            style={{ backgroundColor: `color-mix(in srgb, ${game.away.color} 13%, transparent)` }}
+          />
+          <div
+            className="absolute top-[-32px] right-[10%] size-36 rounded-full blur-3xl"
+            style={{ backgroundColor: `color-mix(in srgb, ${game.home.color} 13%, transparent)` }}
+          />
+        </div>
+        <div className="relative flex items-start justify-between gap-6 pt-1">
+          <TeamColumn
+            team={game.away}
+            status={game.status}
+            hideScores={hideScores}
+            followed={favorites.has(game.away.id)}
+            onToggleFollow={() => onToggleFavorite(game.away.id)}
+          />
+          <TeamColumn
+            team={game.home}
+            status={game.status}
+            hideScores={hideScores}
+            followed={favorites.has(game.home.id)}
+            onToggleFollow={() => onToggleFavorite(game.home.id)}
+          />
+        </div>
       </div>
       <DetailStatusLine game={game} />
     </div>
@@ -64,7 +76,7 @@ function TeamColumn({
 
   return (
     <div className="flex flex-1 flex-col items-center gap-2.5">
-      <TeamLogo team={team} size={44} dimmed={muted} />
+      <TeamLogo team={team} size={56} dimmed={muted} />
       <span
         className={`text-center text-[15px] leading-none font-medium ${
           muted ? "text-ink-2" : "text-ink"
@@ -73,7 +85,7 @@ function TeamColumn({
         {team.name}
       </span>
       <span
-        className={`flex h-[40px] items-center text-[40px] leading-none font-semibold tracking-[-0.035em] ${
+        className={`flex h-[48px] items-center text-[48px] leading-none font-semibold tracking-[-0.035em] ${
           muted ? "text-ink-2" : "text-ink"
         }`}
       >

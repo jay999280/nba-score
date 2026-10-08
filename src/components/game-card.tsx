@@ -51,9 +51,11 @@ export function GameCard({ game, favoriteColor = null, spoilerHidden = false, on
       }}
       className="group block overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface px-4 py-3.5 transition-[background-color,scale] duration-200 hover:bg-elevated active:scale-[0.99]"
       style={
-        favoriteColor
-          ? { backgroundColor: `color-mix(in srgb, ${favoriteColor} 7%, transparent)` }
-          : undefined
+        game.status === "live"
+          ? { backgroundColor: "color-mix(in srgb, var(--live) 8%, transparent)" }
+          : favoriteColor
+            ? { backgroundColor: `color-mix(in srgb, ${favoriteColor} 7%, transparent)` }
+            : undefined
       }
     >
 
@@ -90,7 +92,7 @@ function TeamRow({ team, settled, hidden = false }: { team: TeamSide; settled: b
       ) : null}
 
       <span
-        className={`flex w-11 shrink-0 justify-end text-[19px] leading-none font-semibold tracking-[-0.02em] ${
+        className={`flex w-11 shrink-0 justify-end text-[20px] leading-none font-semibold tracking-[-0.02em] ${
           muted ? "text-ink-2" : "text-ink"
         }`}
       >
