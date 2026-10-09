@@ -112,10 +112,36 @@ v0.1 不含：新闻、视频、评论、博彩、推送、登录、数据库。
 
 怎么装：
 
-1. 手机 Chrome 打开 `https://nba-score-bay.vercel.app`
+1. 手机 Chrome 打开你的部署地址
 2. 首页会出现一条「装到主屏幕，全屏打开｜安装」——点它即可（Chrome 自带的安装横幅经常不弹，
    所以应用自己提供入口，用 `beforeinstallprompt` 接管）
 3. 或者手动：Chrome 右上角 ⋮ → 「安装应用」/「添加到主屏幕」
+
+### 重要：国内网络下必须用自定义域名，别用 `*.vercel.app`
+
+实测（2026-10-09，上海电信）：`nba-score-bay.vercel.app` **间歇性完全不可达**。定位到的机制是
+**针对 `vercel.app` 后缀的 SNI 阻断**，证据是同一个 IP 只换 SNI 就结果相反：
+
+```
+curl --resolve vercel.com:443:76.76.21.21              https://vercel.com/            -> 200
+curl --resolve nba-score-bay.vercel.app:443:76.76.21.21 https://nba-...vercel.app/    -> Connection reset
+```
+
+TCP 到 Vercel 的 anycast IP 是通的（`Test-NetConnection 76.76.21.21 -Port 443` 为 True），
+被重置的是 TLS 握手——所以**换一个普通域名指向 Vercel 就能解决**（SNI 不再是 `*.vercel.app`）。
+附带一提，本机 DNS 还会把这个域名污染到 Facebook 的 IP 段（157.240.12.5），所以解析层面也不可信。
+
+因为它是**间歇性**的（当天早些时候还能正常访问），装在手机上的图标会表现为"有时候能开、
+有时候打不开"——比稳定打不开更让人困惑。所以：**买一个便宜域名（约 ¥30–60/年，Namecheap /
+Cloudflare / Spaceship 都行，Vercel 在海外不需要备案），在 Vercel → Settings → Domains 里加上，
+之后一律用那个域名安装和使用。**
+
+### 关于推送提醒的实话
+
+`fcm.googleapis.com` 在这张网络下同样不可达（实测 15s 超时），而 Chrome 的 Web Push 走的正是
+Google 的 FCM 通道。所以**在国内网络下不挂梯子，手机收不到比赛提醒**——这跟域名和代码都无关，
+是通道本身被墙。想在手机上真正收到推送，需要 VPN 或在境外网络下使用；应用本身的订阅、存储、
+调度逻辑都是好的（本地与境外环境已验证）。
 
 `public/sw.js` 的 fetch 处理、`display: standalone`、maskable 图标、`screenshots`（安装对话框
 里的预览图）都是这条路径的一部分。`manifest` 还带 `id`（避免重复部署被当成第二个应用）和
