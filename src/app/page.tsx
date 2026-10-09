@@ -6,6 +6,7 @@ import { AppHeader } from "@/components/app-header";
 import { DateSwitcher, useDaySwipe } from "@/components/date-switcher";
 import { FavoritesSheet } from "@/components/favorites-sheet";
 import { GameSections } from "@/components/game-sections";
+import { InstallPrompt } from "@/components/install-prompt";
 import { Shell } from "@/components/shell";
 import { GameListSkeleton } from "@/components/skeletons";
 import { EmptyState, ErrorState, StaleNotice } from "@/components/states";
@@ -81,6 +82,7 @@ export default function HomePage() {
       )}
 
       <main {...swipe} className="flex flex-col gap-4">
+        <InstallPrompt />
         {renderGames()}
       </main>
 

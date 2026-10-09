@@ -104,6 +104,32 @@ v0.1 不含：新闻、视频、评论、博彩、推送、登录、数据库。
 
 注意：Web Push 需要安全上下文——`localhost` 可用，局域网 `http://` 不可用。手机上要收提醒需要一次 https 部署（如 Vercel），本地只能在电脑浏览器验证订阅流程。
 
+## 装到安卓手机（当 App 用）
+
+**不需要 APK。** 这个应用满足安卓的可安装标准（manifest ＋ `standalone` ＋ service worker ＋
+图标），装到主屏幕后打开**没有地址栏、没有浏览器界面**，有启动器图标、独立任务卡、推送通知和
+离线外壳——和原生 App 的观感一致，因为它走的就是同一套系统集成。
+
+怎么装：
+
+1. 手机 Chrome 打开 `https://nba-score-bay.vercel.app`
+2. 首页会出现一条「装到主屏幕，全屏打开｜安装」——点它即可（Chrome 自带的安装横幅经常不弹，
+   所以应用自己提供入口，用 `beforeinstallprompt` 接管）
+3. 或者手动：Chrome 右上角 ⋮ → 「安装应用」/「添加到主屏幕」
+
+`public/sw.js` 的 fetch 处理、`display: standalone`、maskable 图标、`screenshots`（安装对话框
+里的预览图）都是这条路径的一部分。`manifest` 还带 `id`（避免重复部署被当成第二个应用）和
+`launch_handler: focus-existing`（点图标复用已开窗口，不叠窗口）。
+
+截图由 `scripts/capture_screenshots.py` 生成（需先跑起生产构建；生成后要 `pnpm build` 一次，
+因为 `next start` 在构建时就固定了 public 文件清单）。
+
+**为什么不打包 APK：** APK 只有两条路，TWA 或 Capacitor，两者本质仍是同一份 Web 内容套一层
+外壳——能多给的只有「应用抽屉里的独立条目」和「可上架 Play 商店」。代价是本机要装 JDK 17 ＋
+Android SDK（约 1GB＋），产物还得手动侧载或上架。装在主屏幕的 PWA 已经覆盖了日常使用的全部
+好处；真要做 APK 的话，`id`/图标/`screenshots` 这些 manifest 字段 Bubblewrap 也是直接复用的，
+现在这份配置就已经是它的输入。
+
 ### 语言说明
 
 界面文案、日期时间（24 小时制）、状态、分区标题、统计项、30 支球队名称与**球员姓名**均为中文。

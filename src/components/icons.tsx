@@ -22,6 +22,16 @@ function base({ size = 16, ...props }: IconProps) {
   };
 }
 
+export function DownloadIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} aria-hidden="true">
+      <path d="M12 3v11" />
+      <path d="M7.5 9.5 12 14l4.5-4.5" />
+      <path d="M4.5 17.5v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-1" />
+    </svg>
+  );
+}
+
 export function ChevronLeftIcon(props: IconProps) {
   return (
     <svg {...base(props)} aria-hidden="true">
