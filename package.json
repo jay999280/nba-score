@@ -1,10 +1,11 @@
 {
   "name": "nba-score",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:app": "node scripts/build-app.mjs",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit"

@@ -104,9 +104,53 @@ v0.1 不含：新闻、视频、评论、博彩、推送、登录、数据库。
 
 注意：Web Push 需要安全上下文——`localhost` 可用，局域网 `http://` 不可用。手机上要收提醒需要一次 https 部署（如 Vercel），本地只能在电脑浏览器验证订阅流程。
 
-## 装到安卓手机（当 App 用）
+## 安卓 App（v0.8 起，推荐路径）
 
-**不需要 APK。** 这个应用满足安卓的可安装标准（manifest ＋ `standalone` ＋ service worker ＋
+**真正的 APK，自用侧载，不要任何申请材料**：没有开发者账号、不上架、不备案、不需要域名。
+
+```bash
+# 本地只管生成静态包；APK 由 CI 构建（本机无需 Android SDK）
+APP_TARGET=android pnpm build     # -> out/
+pnpm exec cap sync android        # -> android/app/src/main/assets/public/
+```
+
+推送到 `main` 后 GitHub Actions（`.github/workflows/android.yml`）会自动跑
+`./gradlew assembleDebug`，产物在 Actions 的 **nba-score-apk** artifacts 里，下载即得
+`app-debug.apk`（约 4.5 MB）。命令行取：
+
+```bash
+gh run list --limit 1                                # 找 run id
+gh run download <run-id> -n nba-score-apk -D ./apk
+```
+
+### 它是怎么工作的（关键：没有服务器）
+
+| 层 | 做法 |
+| --- | --- |
+| 界面 | `APP_TARGET=android next build` 把整个前端导出成静态文件，**打进 APK**（`webDir: "out"`）。打开即渲染，不联网也能看壳 |
+| 数据 | 手机上没有 Node 服务器，所以**服务层直接跑在 WebView 里**：`src/lib/client/data-source.ts` 在原生环境下动态载入 `src/lib/nba/games.ts`，用 Capacitor 的原生 HTTP 桥请求 NBA 数据源 |
+| 为什么必须用原生桥 | NBA 的 CDN **不发 CORS 头**，且要求 `Referer`（浏览器禁止脚本设置）——普通 fetch 会被拦。原生桥不受 CORS 约束，也能自带 header。实测 S3 镜像甚至裸请求就返回 200 |
+| 路由 | 静态导出要求每个路由都是真实的 `index.html`，所以详情页从 `/game/<id>` 改成 `/game?id=<id>`（`trailingSlash: true` 生成 `game/index.html`） |
+| 双构建目标 | `next.config.ts` 用 `pageExtensions` 让 API 路由在 Web 构建里生效、在 App 构建里被忽略（`route.api.ts` 不再匹配 `route`）。**Web 部署依然完好**，Vercel 照常工作 |
+
+### 还没做的
+
+**手机本地通知**（`@capacitor/local-notifications` 已装好并注册，代码未接）。没做的原因是
+**没有真机我无法验证通知是否真的弹出**——不想交一个看起来能用、实际收不到的东西。App 里
+Web Push 的设置入口已按平台隐藏，不会出现点了没反应的按钮。等你在真机确认 App 能跑通，
+我再把「关注球队开赛/完赛提醒」接到本地通知上（那时不依赖 FCM，也不需要梯子）。
+
+### 注意
+
+- **安装时系统会提示「未知来源」**——侧载的正常提示，允许即可
+- 用的是 debug 签名（AGP 默认 v2/v3，Android 7+ 均可）。**每次 CI 重新构建签名可能不同**，
+  升级时若提示签名冲突，先卸载旧版再装
+- 本仓库的 `android/` 工程是提交进版本库的（含 gradle wrapper）；Web 资源由 CI 用
+  `cap sync` 生成，不入库
+
+## 装到安卓手机（PWA 路径，Web 版仍在）
+
+**不需要 APK。** 这个应用同时满足安卓的可安装标准（manifest ＋ `standalone` ＋ service worker ＋
 图标），装到主屏幕后打开**没有地址栏、没有浏览器界面**，有启动器图标、独立任务卡、推送通知和
 离线外壳——和原生 App 的观感一致，因为它走的就是同一套系统集成。
 
