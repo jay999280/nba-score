@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">NBA比分</string>
+    <string name="title_activity_main">NBA比分</string>
+    <string name="package_name">com.jay.nbascore</string>
+    <string name="custom_url_scheme">com.jay.nbascore</string>
+</resources>

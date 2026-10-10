@@ -38,7 +38,7 @@ export function GameCard({ game, favoriteColor = null, spoilerHidden = false, on
 
   return (
     <Link
-      href={`/game/${game.id}`}
+      href={`/game?id=${game.id}`}
       aria-label={
         spoilerHidden
           ? `显示${game.away.name}对${game.home.name}的比分`

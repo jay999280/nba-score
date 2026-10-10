@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import { BoxScore } from "@/components/game/box-score";
 import { MatchupContext } from "@/components/game/matchup-context";
@@ -21,10 +21,26 @@ import { usePush } from "@/lib/client/use-push";
 import { useSpoiler } from "@/lib/client/use-spoiler";
 import { formatUpdatedAt } from "@/lib/format";
 
-/** One game: score and periods, then Overview and Box Score (PRD §13–15). */
+/**
+ * One game: score and periods, then Overview, Box Score and Plays
+ * (PRD §13–15).
+ *
+ * The game id arrives as `?id=` rather than a path segment: the Android build
+ * is a static export served from local files, where every route has to exist
+ * as a real `index.html` and an unknown path cannot be resolved by a router.
+ * Web keeps the identical shape so links stay valid in both targets.
+ */
 export default function GamePage() {
-  const params = useParams<{ gameId: string }>();
-  const gameId = typeof params?.gameId === "string" ? params.gameId : "";
+  return (
+    <Suspense fallback={<Shell width="max-w-[720px]"><DetailSkeleton /></Shell>}>
+      <GameDetail />
+    </Suspense>
+  );
+}
+
+function GameDetail() {
+  const searchParams = useSearchParams();
+  const gameId = searchParams.get("id") ?? "";
   const { data, status, stale, updatedAt, refresh } = useGameDetail(gameId);
   const [tab, setTab] = useState<DetailTab>("overview");
   const spoiler = useSpoiler();

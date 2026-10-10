@@ -1,0 +1,70 @@
+name: Android APK
+
+# Builds the sideloadable debug APK. No Play Store account, no signing
+# materials, no domain: the web bundle is baked into the APK and the app talks
+# to the NBA sources itself.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # AGP 8.13 / Gradle 8.14 both want a modern JDK.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The static export: `pageExtensions` drops the route handlers, which a
+      # serverless bundle has no way to run.
+      - name: Build the app bundle
+        run: APP_TARGET=android pnpm build
+
+      - name: Copy the bundle into the Android project
+        run: pnpm exec cap sync android
+
+      # The runner image ships an SDK, but not always the exact platform this
+      # Capacitor template pins (compileSdk 36).
+      - name: Ensure the Android platform is installed
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" > /dev/null
+
+      - name: Build the debug APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Collect the APK
+        run: |
+          mkdir -p dist
+          cp android/app/build/outputs/apk/debug/app-debug.apk dist/nba-score.apk
+          ls -lh dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nba-score-apk
+          path: dist/nba-score.apk
+          if-no-files-found: error
+          retention-days: 30

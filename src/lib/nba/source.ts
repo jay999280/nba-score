@@ -50,24 +50,55 @@ const inflight = new Map<string, Promise<unknown>>();
 const recentFailures = new Map<string, number>();
 const FAILURE_TTL_MS = 15_000;
 
+export interface UpstreamResponse {
+  status: number;
+  text: string;
+}
+
+/**
+ * How one upstream GET is performed.
+ *
+ * The default uses `fetch`, which is correct on the server (web build, through
+ * our own API routes). The Android app swaps in the native HTTP bridge: a
+ * WebView may not set the `Referer` the CDN requires, and the CDN answers with
+ * no CORS headers, so a plain browser fetch is rejected before we see a byte.
+ */
+export type UpstreamRequester = (url: string, timeoutMs: number) => Promise<UpstreamResponse>;
+
+const fetchRequester: UpstreamRequester = async (url, timeoutMs) => {
+  const response = await fetch(url, {
+    headers: UPSTREAM_HEADERS,
+    cache: "no-store",
+    signal: AbortSignal.timeout(timeoutMs),
+  });
+  return { status: response.status, text: await response.text() };
+};
+
+let requester: UpstreamRequester = fetchRequester;
+
+/** Installed once by the native runtime; harmless to call again. */
+export function setUpstreamRequester(next: UpstreamRequester): void {
+  requester = next;
+}
+
+/** The headers the CDN expects, for a native bridge that must set them itself. */
+export function upstreamHeaders(): Record<string, string> {
+  return { ...UPSTREAM_HEADERS };
+}
+
 async function requestJson<T>(path: string, timeoutMs: number): Promise<T> {
   let lastError: unknown = null;
 
   for (const origin of ORIGINS) {
     const url = `${origin}/${path}`;
     try {
-      const response = await fetch(url, {
-        headers: UPSTREAM_HEADERS,
-        cache: "no-store",
-        signal: AbortSignal.timeout(timeoutMs),
-      });
+      const { status, text } = await requester(url, timeoutMs);
 
-      if (!response.ok) {
-        lastError = new UpstreamError(`${url} responded ${response.status}`);
+      if (status < 200 || status >= 300) {
+        lastError = new UpstreamError(`${url} responded ${status}`);
         continue;
       }
 
-      const text = await response.text();
       try {
         return JSON.parse(text) as T;
       } catch {

@@ -8,7 +8,13 @@ import type { MetadataRoute } from "next";
  * `id` pins the app identity so a redeploy can never register as a second
  * install, and `launch_handler` reuses the window that is already open
  * instead of stacking duplicates.
+ *
+ * The manifest is a fixed object, so it is declared static — that is what lets
+ * the Android build (`output: "export"`) include it. An unmarked route counts
+ * as dynamic and blocks the export.
  */
+export const dynamic = "force-static";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",

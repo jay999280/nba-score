@@ -2,8 +2,9 @@
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
-import { localDateKey, localDayWindow } from "@/lib/format";
+import { localDateKey } from "@/lib/format";
 import type { GameDetailResponse, GamesResponse, PlaysResponse } from "@/lib/types";
+import { activeSource } from "./data-source";
 import { usePolledResource, type ResourceState } from "./use-polled-resource";
 
 /** Live games move fastest; tip-off watch catches the flip promptly. */
@@ -29,11 +30,10 @@ export function useLocalToday(): string | null {
 }
 
 export function useGames(dateKey: string | null): ResourceState<GamesResponse> {
-  const url = useMemo(() => {
+  const load = useMemo(() => {
     if (!dateKey) return null;
-    const { from, to } = localDayWindow(dateKey);
-    const params = new URLSearchParams({ date: dateKey, from, to });
-    return `/api/games?${params.toString()}`;
+    const source = activeSource();
+    return (signal: AbortSignal) => source.games(dateKey, signal);
   }, [dateKey]);
 
   const nextDelay = useCallback((data: GamesResponse) => {
@@ -56,12 +56,18 @@ export function useGames(dateKey: string | null): ResourceState<GamesResponse> {
 
   return usePolledResource<GamesResponse>({
     cacheKey: `games:${dateKey ?? "pending"}`,
-    url,
+    load,
     nextDelay,
   });
 }
 
 export function useGameDetail(gameId: string): ResourceState<GameDetailResponse> {
+  const load = useMemo(() => {
+    if (!gameId) return null;
+    const source = activeSource();
+    return (signal: AbortSignal) => source.detail(gameId, signal);
+  }, [gameId]);
+
   const nextDelay = useCallback((data: GameDetailResponse) => {
     if (data.game.status === "live") return POLL_LIVE_MS;
     if (
@@ -77,7 +83,7 @@ export function useGameDetail(gameId: string): ResourceState<GameDetailResponse>
 
   return usePolledResource<GameDetailResponse>({
     cacheKey: `game:${gameId}`,
-    url: gameId ? `/api/games/${gameId}` : null,
+    load,
     nextDelay,
   });
 }
@@ -88,6 +94,12 @@ export function useGameDetail(gameId: string): ResourceState<GameDetailResponse>
  * Live games keep polling; everything else loads once and stops.
  */
 export function useGamePlays(gameId: string, enabled: boolean): ResourceState<PlaysResponse> {
+  const load = useMemo(() => {
+    if (!enabled || !gameId) return null;
+    const source = activeSource();
+    return (signal: AbortSignal) => source.plays(gameId, signal);
+  }, [gameId, enabled]);
+
   const nextDelay = useCallback((data: PlaysResponse) => {
     if (data.status === "live") return POLL_LIVE_MS;
     return null;
@@ -95,7 +107,7 @@ export function useGamePlays(gameId: string, enabled: boolean): ResourceState<Pl
 
   return usePolledResource<PlaysResponse>({
     cacheKey: `plays:${gameId}`,
-    url: enabled && gameId ? `/api/games/${gameId}/plays` : null,
+    load,
     nextDelay,
   });
 }

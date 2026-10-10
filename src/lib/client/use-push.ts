@@ -46,10 +46,27 @@ const permissionSnapshot = (): PushPermission =>
 const permissionServerSnapshot = (): PushPermission => "unsupported";
 
 /**
+ * Web Push belongs to the web build. The Android app has no server to hold a
+ * VAPID subscription and no FCM channel to deliver through (Google's push
+ * service is unreachable on the networks this app exists for), so the reminder
+ * controls stay hidden there instead of offering something that cannot work.
+ * On-device notifications are the app's route to that feature.
+ */
+function nativeSnapshot(): boolean {
+  if (typeof window === "undefined") return true;
+  const capacitor = (
+    window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }
+  ).Capacitor;
+  return capacitor?.isNativePlatform?.() === true;
+}
+const nativeServerSnapshot = () => true;
+
+/**
  * Web Push subscription state. The permission itself has no change events, so
  * the external store is read-only and local overrides cover our own flows.
  */
 export function usePush(): PushController {
+  const native = useSyncExternalStore(subscribeNoop, nativeSnapshot, nativeServerSnapshot);
   const storedPermission = useSyncExternalStore(
     subscribeNoop,
     permissionSnapshot,
@@ -72,6 +89,7 @@ export function usePush(): PushController {
   }, []);
 
   useEffect(() => {
+    if (native) return;
     let cancelled = false;
     fetch("/api/push/status", { cache: "no-store" })
       .then((response) => (response.ok ? response.json() : null))
@@ -82,7 +100,7 @@ export function usePush(): PushController {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [native]);
 
   useEffect(() => {
     // Permission can change outside the app (browser site settings); re-read
@@ -169,7 +187,7 @@ export function usePush(): PushController {
   );
 
   return {
-    supported: permission !== "unsupported",
+    supported: !native && permission !== "unsupported",
     permission,
     subscribed: status?.subscribed ?? false,
     settings: status?.settings ?? null,

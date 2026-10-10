@@ -109,7 +109,7 @@ self.addEventListener("push", (event) => {
       body,
       icon: "/icon-192.png",
       badge: "/icon-192.png",
-      data: { url: data.gameId ? `/game/${data.gameId}` : "/" },
+      data: { url: data.gameId ? `/game?id=${data.gameId}` : "/" },
       tag: data.gameId ? `game-${data.gameId}-${data.kind || "update"}` : "nba-score",
     }),
   );

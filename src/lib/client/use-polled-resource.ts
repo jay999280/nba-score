@@ -24,8 +24,11 @@ export interface ResourceState<T> {
 interface Options<T> {
   /** Identity of the payload; also the in-memory cache key. */
   cacheKey: string;
-  /** `null` disables fetching entirely. */
-  url: string | null;
+  /**
+   * Performs the request. `null` disables fetching entirely and stops the
+   * loop. Must be referentially stable (wrap it in `useCallback`).
+   */
+  load: ((signal: AbortSignal) => Promise<T>) | null;
   /**
    * Milliseconds until the next poll, or `null` to stop. Must be referentially
    * stable (wrap it in `useCallback`); it is read through a ref regardless.
@@ -56,7 +59,7 @@ function snapshotFor<T>(key: string, failed: boolean): Snapshot<T> {
 
 export function usePolledResource<T>({
   cacheKey,
-  url,
+  load,
   nextDelay,
   retryDelay = 20_000,
 }: Options<T>): ResourceState<T> {
@@ -74,7 +77,7 @@ export function usePolledResource<T>({
   });
 
   useEffect(() => {
-    if (!url) return;
+    if (!load) return;
 
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -87,10 +90,7 @@ export function usePolledResource<T>({
 
     const run = async () => {
       try {
-        const response = await fetch(url, { signal: controller.signal, cache: "no-store" });
-        if (!response.ok) throw new Error(`Request failed with ${response.status}`);
-
-        const body = (await response.json()) as T;
+        const body = await load(controller.signal);
         if (cancelled) return;
 
         const updatedAt = new Date();
@@ -130,7 +130,7 @@ export function usePolledResource<T>({
       window.removeEventListener("focus", onWake);
       document.removeEventListener("visibilitychange", onWake);
     };
-  }, [cacheKey, url, nonce, retryDelay]);
+  }, [cacheKey, load, nonce, retryDelay]);
 
   const refresh = useCallback(() => setNonce((value) => value + 1), []);
 
