@@ -44,11 +44,21 @@ jobs:
         run: pnpm exec cap sync android
 
       # The runner image ships an SDK, but not always the exact platform this
-      # Capacitor template pins (compileSdk 36).
+      # Capacitor template pins (compileSdk 36), and `sdkmanager` is not on
+      # PATH by default. Install when we can find it, otherwise let Gradle
+      # resolve what the image already has.
       - name: Ensure the Android platform is installed
         run: |
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platforms;android-36" "build-tools;36.0.0" > /dev/null
+          SDKMANAGER="$(ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -n1 || true)"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          if [ -n "$SDKMANAGER" ]; then
+            echo "using $SDKMANAGER"
+            yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+            "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" > /dev/null
+          else
+            echo "sdkmanager not found — relying on the runner image and Gradle"
+          fi
+          ls "$ANDROID_HOME/platforms" || true
 
       - name: Build the debug APK
         working-directory: android
