@@ -37,6 +37,8 @@
   ],
   "exclude": [
     "node_modules",
-    "_probe"
+    "_probe",
+    "tests",
+    "android"
   ]
 }

@@ -2,7 +2,6 @@
 
 import { formatLocalTime, periodLabel } from "@/lib/format";
 import type { Game } from "@/lib/types";
-import { LiveClock } from "../live-clock";
 import { TeamLogo } from "../team-logo";
 
 interface StickyGameBarProps {
@@ -14,8 +13,6 @@ interface StickyGameBarProps {
    * hidden result exists nowhere in the DOM — not even in an invisible node.
    */
   hideScores?: boolean;
-  /** Epoch ms of the payload, so the live clock resyncs on every poll. */
-  updatedAtMs?: number;
 }
 
 /**
@@ -26,9 +23,11 @@ interface StickyGameBarProps {
  * no layout shift — and `prefers-reduced-motion` (see globals.css) makes the
  * swap instant.
  */
-export function StickyGameBar({ game, visible, hideScores = false, updatedAtMs }: StickyGameBarProps) {
-  const awayMuted = game.status === "final" && !game.away.winner;
-  const homeMuted = game.status === "final" && !game.home.winner;
+export function StickyGameBar({ game, visible, hideScores = false }: StickyGameBarProps) {
+  // Every result-derived style must go neutral while scores are hidden: the
+  // dimmed-loser treatment alone was enough to read the winner off the crests.
+  const awayMuted = !hideScores && game.status === "final" && !game.away.winner;
+  const homeMuted = !hideScores && game.status === "final" && !game.home.winner;
 
   return (
     <div
@@ -37,25 +36,27 @@ export function StickyGameBar({ game, visible, hideScores = false, updatedAtMs }
         visible ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-full opacity-0"
       }`}
     >
-      <div className="mx-auto flex w-full max-w-[720px] items-center justify-between gap-2 px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 sm:px-5">
-        <span className="flex min-w-0 flex-1 items-center gap-1.5">
+      {/* Exactly 44px of content plus the safe area, so anything that parks
+          below this bar (the box-score header) can use one shared offset. */}
+      <div className="mx-auto flex h-[calc(var(--bar-h)+env(safe-area-inset-top))] w-full max-w-[720px] items-center justify-between gap-2 px-4 pt-[env(safe-area-inset-top)] sm:px-5">
+        <span className="flex min-w-0 flex-1 items-center gap-2">
           <TeamLogo team={game.away} size={20} dimmed={awayMuted} />
-          <span className="truncate text-[13px] leading-none font-medium text-ink">
+          <span className="truncate text-body leading-none font-medium text-ink">
             {game.away.name}
           </span>
-          <span className="tnum shrink-0 text-[15px] leading-none font-semibold text-ink">
+          <span className="tnum shrink-0 text-title leading-none font-semibold text-ink">
             {!hideScores ? (game.away.score ?? "") : ""}
           </span>
         </span>
 
-        <span className="flex max-w-[120px] shrink-0 items-center gap-1.5">
+        <span className="flex max-w-[120px] shrink-0 items-center gap-2">
           {game.status === "live" ? (
             <span className="animate-breathe size-1.5 shrink-0 rounded-full bg-live" />
           ) : null}
           <span className="eyebrow truncate text-ink-3">
-            {game.status === "live" && game.clock && game.period > 0 && updatedAtMs ? (
-              <span>
-                {periodLabel(game.period)} · <LiveClock key={updatedAtMs} clock={game.clock} />
+            {game.status === "live" && game.clock && game.period > 0 ? (
+              <span className="tnum">
+                {periodLabel(game.period)} · {game.clock}
               </span>
             ) : (
               barStatus(game)
@@ -63,11 +64,11 @@ export function StickyGameBar({ game, visible, hideScores = false, updatedAtMs }
           </span>
         </span>
 
-        <span className="flex min-w-0 flex-1 items-center justify-end gap-1.5">
-          <span className="tnum shrink-0 text-[15px] leading-none font-semibold text-ink">
+        <span className="flex min-w-0 flex-1 items-center justify-end gap-2">
+          <span className="tnum shrink-0 text-title leading-none font-semibold text-ink">
             {!hideScores ? (game.home.score ?? "") : ""}
           </span>
-          <span className="truncate text-[13px] leading-none font-medium text-ink">
+          <span className="truncate text-body leading-none font-medium text-ink">
             {game.home.name}
           </span>
           <TeamLogo team={game.home} size={20} dimmed={homeMuted} />

@@ -3,10 +3,19 @@ name: Android APK
 # Builds the sideloadable debug APK. No Play Store account, no signing
 # materials, no domain: the web bundle is baked into the APK and the app talks
 # to the NBA sources itself.
+#
+# Two entry points, one pipeline:
+# - a push to `main` (or a manual run) stops after the artifact upload — the
+#   installable build used for testing;
+# - a push of a `v*` tag additionally validates the declared version and
+#   publishes that same APK as a GitHub Release. The release is what the in-app
+#   update check reads (src/lib/client/update-check.ts); without one there is
+#   nothing to offer, and the banner simply never appears.
 on:
   workflow_dispatch:
   push:
     branches: [main]
+    tags: ["v*"]
 
 permissions:
   contents: read
@@ -14,8 +23,17 @@ permissions:
 jobs:
   apk:
     runs-on: ubuntu-latest
+    # `contents: write` is only used by the tag path (creating the release and
+    # uploading the APK). A job-level block replaces the read-only default
+    # above for this job; the main-branch steps themselves are unchanged.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history and tags: the release check compares this tag's
+          # versionCode with the previous release's, read from git history.
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         with:
@@ -35,10 +53,28 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Quality gates, in order, before anything is packaged. They are separate
+      # steps so a failure is attributed to one gate, and they run sequentially
+      # (GitHub runs a job's steps one at a time) because they share `.next`.
+      # No `continue-on-error`: a red gate fails the job and the pack steps
+      # below never run.
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # `pnpm test` is `node --test` with the TS resolver in tests/register.mjs,
+      # which needs the Node 22 pinned above.
+      - name: Test
+        run: pnpm test
+
       # The static export: `pageExtensions` drops the route handlers, which a
-      # serverless bundle has no way to run.
+      # serverless bundle has no way to run. `pnpm build:app` is the
+      # cross-platform equivalent of `APP_TARGET=android pnpm build` (it sets
+      # that env var and runs the local Next binary).
       - name: Build the app bundle
-        run: APP_TARGET=android pnpm build
+        run: pnpm build:app
 
       - name: Copy the bundle into the Android project
         run: pnpm exec cap sync android
@@ -78,3 +114,85 @@ jobs:
           path: dist/nba-score.apk
           if-no-files-found: error
           retention-days: 30
+
+      # ---- Release path: tag pushes only --------------------------------
+      #
+      # A release is one `vX.Y.Z` tag. Everything the app needs to accept it is
+      # checked here, because a published release cannot be un-seen by phones
+      # that already compared against it:
+      #   * the tag, android/app/build.gradle's versionName and package.json's
+      #     version must agree — the APK's update check compares the tag with
+      #     package.json's version baked into the bundle, so a mismatch would
+      #     offer the same "update" forever;
+      #   * versionCode must be greater than the previous release's, or Android
+      #     refuses the in-place upgrade.
+      - name: Validate the release version
+        if: startsWith(github.ref, 'refs/tags/')
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          tag="$GITHUB_REF_NAME"
+          if ! [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::release tag '$tag' must look like v1.2.3"
+            exit 1
+          fi
+          version="${tag#v}"
+
+          version_name="$(sed -n 's/^[[:space:]]*versionName[[:space:]]*"\([^"]*\)".*/\1/p' android/app/build.gradle | head -n1)"
+          version_code="$(sed -n 's/^[[:space:]]*versionCode[[:space:]]*\([0-9][0-9]*\).*/\1/p' android/app/build.gradle | head -n1)"
+          package_version="$(node -p "require('./package.json').version")"
+
+          if [[ -z "$version_name" || -z "$version_code" ]]; then
+            echo "::error::could not read versionName/versionCode from android/app/build.gradle"
+            exit 1
+          fi
+
+          echo "tag:          $tag"
+          echo "versionName:  $version_name  (android/app/build.gradle)"
+          echo "versionCode:  $version_code  (android/app/build.gradle)"
+          echo "package.json: $package_version  (injected into the app as its own version)"
+
+          if [[ "$version_name" != "$version" || "$package_version" != "$version" ]]; then
+            echo "::error::tag ($version), versionName ($version_name) and package.json ($package_version) must all be $version"
+            exit 1
+          fi
+
+          previous_tag="$(git describe --tags --abbrev=0 "${tag}^" 2>/dev/null || true)"
+          if [[ -n "$previous_tag" ]]; then
+            previous_code="$(git show "${previous_tag}:android/app/build.gradle" | sed -n 's/^[[:space:]]*versionCode[[:space:]]*\([0-9][0-9]*\).*/\1/p' | head -n1)"
+            echo "previous tag: $previous_tag (versionCode ${previous_code:-unknown})"
+            if [[ -n "$previous_code" && "$version_code" -le "$previous_code" ]]; then
+              echo "::error::versionCode $version_code must be greater than $previous_code from $previous_tag"
+              exit 1
+            fi
+          else
+            echo "previous tag: none (first release; nothing to compare versionCode against)"
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      # `releases/latest` (what the app asks for) returns the newest published,
+      # non-draft, non-prerelease release; the asset name only has to end in
+      # `.apk` for the check to accept it. The file is `dist/nba-score.apk`,
+      # which is the app-debug.apk the steps above produced.
+      - name: Publish the GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: NBA 比分 ${{ github.ref_name }}
+          body: |
+            NBA 比分 ${{ steps.release.outputs.version }}
+
+            侧载安装（Android 7+）：下载下方的 `nba-score.apk`。签名是 debug 签名，
+            若覆盖安装提示签名冲突，先卸载旧版再装。
+
+            已经运行旧版本的 App 会在下次打开时自检（24 小时内至多一次），
+            发现新版本后在首页提示一次更新。
+          files: dist/nba-score.apk
+          fail_on_unmatched_files: true
+          make_latest: "true"
+          draft: false
+          prerelease: false

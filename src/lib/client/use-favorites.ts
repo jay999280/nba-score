@@ -2,23 +2,23 @@
 
 import { useCallback, useMemo } from "react";
 
+import { NO_FAVORITES, parseFavoriteIds } from "./storage-validators";
 import { STORAGE_KEYS } from "./storage";
 import { useStoredValue } from "./local-store";
-
-/** Stable fallback: `useStoredValue` memoizes on it. */
-const NO_FAVORITES: number[] = [];
 
 /**
  * Favorite teams, stored as team ids (PRD §16, §29).
  *
- * In v0.1 they only change the order of the home list — no extra sections.
+ * They reorder the home list and, with the 关注 filter, narrow it; there is no
+ * second list and no extra section. The stored shape is validated at the
+ * boundary (`parseFavoriteIds`), so a corrupted value degrades to "no
+ * favorites" instead of crashing.
  */
 export function useFavorites() {
-  const [stored, setStored] = useStoredValue<number[]>(STORAGE_KEYS.favorites, NO_FAVORITES);
-
-  const favoriteIds = useMemo(
-    () => stored.filter((id): id is number => typeof id === "number"),
-    [stored],
+  const [favoriteIds, setStored] = useStoredValue<number[]>(
+    STORAGE_KEYS.favorites,
+    NO_FAVORITES,
+    parseFavoriteIds,
   );
 
   const toggle = useCallback(

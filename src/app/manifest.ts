@@ -25,6 +25,9 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "portrait",
+    // The manifest is static (see `dynamic` above), so it cannot follow the
+    // in-app theme. The browser chrome uses the viewport meta instead, which
+    // does carry both schemes; these two values stay the white install surface.
     background_color: "#ffffff",
     theme_color: "#ffffff",
     lang: "zh-CN",

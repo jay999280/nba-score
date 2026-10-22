@@ -16,25 +16,21 @@ export function InstallPrompt() {
   if (!canInstall) return null;
 
   return (
-    <div className="animate-fade flex items-center gap-3 rounded-[var(--radius-card)] border border-line bg-surface px-4 py-3">
+    <div className="card animate-fade flex items-center gap-3 px-4 py-3">
       <DownloadIcon size={16} className="shrink-0 text-ink-3" />
-      <p className="min-w-0 flex-1 text-[13px] leading-snug text-ink-2">
+      <p className="min-w-0 flex-1 text-body leading-snug text-ink-2">
         装到主屏幕，全屏打开
       </p>
-      <button
-        type="button"
-        onClick={() => void install()}
-        className="shrink-0 rounded-full border border-ink bg-ink px-3.5 py-1.5 text-[13px] leading-none font-medium text-bg transition-opacity hover:opacity-90"
-      >
+      <button type="button" onClick={() => void install()} className="btn-primary shrink-0">
         安装
       </button>
       <button
         type="button"
         onClick={dismiss}
         aria-label="不再提示"
-        className="-mr-1 flex size-8 shrink-0 items-center justify-center rounded-full text-ink-3 transition-colors hover:text-ink"
+        className="btn-ghost -mr-1 shrink-0"
       >
-        <CloseIcon size={14} />
+        <CloseIcon size={16} />
       </button>
     </div>
   );

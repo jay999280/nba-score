@@ -1,25 +1,28 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import { BoxScore } from "@/components/game/box-score";
 import { MatchupContext } from "@/components/game/matchup-context";
 import { Overview } from "@/components/game/overview";
 import { PlaysPanel } from "@/components/game/plays";
+import { PreGameView } from "@/components/game/pre-game";
 import { PeriodTable, ScoreHeader } from "@/components/game/score-header";
 import { StickyGameBar } from "@/components/game/sticky-bar";
 import { Tabs, type DetailTab } from "@/components/game/tabs";
 import { ArrowLeftIcon, EyeIcon } from "@/components/icons";
 import { Shell } from "@/components/shell";
 import { DetailSkeleton } from "@/components/skeletons";
-import { ErrorState, StaleNotice } from "@/components/states";
+import { ErrorState, FreshnessLine } from "@/components/states";
 import { useGameDetail } from "@/lib/client/use-games";
 import { useFavorites } from "@/lib/client/use-favorites";
+import { clearDetailOrigin, detailOriginFor, markDetailEntry } from "@/lib/client/list-view";
 import { usePush } from "@/lib/client/use-push";
 import { useSpoiler } from "@/lib/client/use-spoiler";
-import { formatUpdatedAt } from "@/lib/format";
+import { useStandings } from "@/lib/client/use-standings";
+import { gameStageFor, gameStageLabel } from "@/lib/nba/game-stage";
+import { detailAvailability, freshnessNotice } from "@/lib/game-state";
 
 /**
  * One game: score and periods, then Overview, Box Score and Plays
@@ -41,7 +44,8 @@ export default function GamePage() {
 function GameDetail() {
   const searchParams = useSearchParams();
   const gameId = searchParams.get("id") ?? "";
-  const { data, status, stale, updatedAt, refresh } = useGameDetail(gameId);
+  const { data, status, refresh } = useGameDetail(gameId);
+  const standings = useStandings();
   const [tab, setTab] = useState<DetailTab>("overview");
   const spoiler = useSpoiler();
   const favorites = useFavorites();
@@ -62,9 +66,61 @@ function GameDetail() {
   );
   const headerRef = useRef<HTMLDivElement>(null);
   const [pastHeader, setPastHeader] = useState(false);
+  const router = useRouter();
+
+  /**
+   * Going back must land the reader where they left the list.
+   *
+   * A plain `href="/"` threw away the date, the 关注 filter and the scroll
+   * offset, and always. `router.back()` replays the entry the list pushed, so
+   * the URL and the position come back together.
+   *
+   * A game opened cold — a notification, a shared link, a new tab — has no
+   * entry of ours behind it, and `history.back()` there would leave the app or
+   * do nothing at all, so that case goes to today's home page on purpose. The
+   * receipt's document identity is a value that only lives in this JavaScript
+   * realm, so a tab that inherited a copy of `sessionStorage` cannot claim the
+   * visit either.
+   *
+   * The decision is re-made at the moment of the press rather than taken from
+   * the visit's own snapshot, because "did this visit come from the list?" has
+   * to be answered for **this** game: an old marker left by an earlier visit
+   * must not authorize a back press into an unrelated history entry.
+   */
+  const goBack = useCallback(() => {
+    const receipt = detailOriginFor(gameId);
+    if (!receipt) {
+      router.push("/");
+      return;
+    }
+    // Spending the receipt here is what stops a second press from walking back
+    // again if the first navigation did not happen to unmount this page.
+    clearDetailOrigin();
+    router.back();
+  }, [gameId, router]);
+
+  /**
+   * Tell this history entry that a card tap pushed it.
+   *
+   * The session receipt is a statement about the past that a copied storage or a
+   * re-entry can repeat; the entry's own state cannot be reproduced by anything
+   * but the navigation that created it, which is why it is what the back control
+   * trusts — and why the return still works after a reload of this page, when
+   * the receipt belongs to the document that was replaced.
+   */
+  useEffect(() => {
+    markDetailEntry(gameId);
+  }, [gameId]);
 
   const game = data?.game ?? null;
   const hidden = game !== null && spoiler.enabled && game.status === "final" && !spoiler.isRevealed(game.id);
+
+  /**
+   * A game with no score, no statistics and no play-by-play is the pre-game
+   * state. It gets its own layout: the normal three-tab structure would be
+   * three empty panels — two of them identical — before tip-off.
+   */
+  const preGame = game !== null && detailAvailability(game) === "not-started";
 
   useEffect(() => {
     const el = headerRef.current;
@@ -80,15 +136,16 @@ function GameDetail() {
   return (
     <Shell width="max-w-[720px]">
       <header className="flex items-center justify-between">
-        <Link
-          href="/"
+        <button
+          type="button"
+          onClick={goBack}
           aria-label="返回全部比赛"
-          className="-ml-2 flex size-11 items-center justify-center rounded-full text-ink-3 transition-colors hover:text-ink"
+          className="btn-ghost -ml-2"
         >
           <ArrowLeftIcon size={18} />
-        </Link>
+        </button>
         <span className="eyebrow text-ink-3">
-          {game?.label ? `NBA · ${game.label}` : "NBA"}
+          {game ? `NBA · ${gameStageLabel(game.stage ?? gameStageFor(game.id, game.label ?? undefined), game.label ?? undefined)}` : "NBA"}
         </span>
         <span className="size-11" aria-hidden="true" />
       </header>
@@ -103,30 +160,42 @@ function GameDetail() {
         <>
           {/* Outside the animate-rise wrapper on purpose: a retained animation
               transform would hijack this fixed bar's containing block. */}
-          <StickyGameBar game={game} visible={pastHeader} hideScores={hidden} updatedAtMs={updatedAt?.getTime()} />
+          {!preGame ? (
+            <StickyGameBar game={game} visible={pastHeader} hideScores={hidden} />
+          ) : null}
           <div className="animate-rise flex flex-col gap-8">
             <div ref={headerRef}>
-              <ScoreHeader
-                game={game}
-                hideScores={hidden}
-                favorites={favorites.favoriteSet}
-                onToggleFavorite={handleToggleFavorite}
-                updatedAtMs={updatedAt?.getTime()}
-              />
+              {preGame ? (
+                <PreGameView
+                  game={game}
+                  standings={standings.data}
+                  favorites={favorites.favoriteSet}
+                  onToggleFavorite={handleToggleFavorite}
+                  pending={data?.freshness.schedulePending === true}
+                />
+              ) : (
+                <ScoreHeader
+                  game={game}
+                  standings={standings.data}
+                  hideScores={hidden}
+                  favorites={favorites.favoriteSet}
+                  onToggleFavorite={handleToggleFavorite}
+                />
+              )}
             </div>
 
-            {hidden ? (
-              <div className="animate-fade flex flex-col items-center gap-3 rounded-[var(--radius-card)] border border-line bg-surface px-6 py-10 text-center">
+            {preGame ? null : hidden ? (
+              <div className="animate-fade state-panel px-6 py-10">
                 <p className="eyebrow text-ink-3">已结束</p>
                 <button
                   type="button"
                   onClick={() => spoiler.reveal(game.id)}
-                  className="flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 text-[14px] font-medium text-bg transition-opacity hover:opacity-90 active:scale-[0.99]"
+                  className="btn-primary"
                 >
-                  <EyeIcon size={15} />
+                  <EyeIcon size={16} />
                   显示比分
                 </button>
-                <p className="text-[12px] leading-relaxed text-ink-3">
+                <p className="text-meta leading-relaxed text-ink-3">
                   显示后将看到比分、节次与球员数据
                 </p>
               </div>
@@ -138,7 +207,7 @@ function GameDetail() {
 
                 <MatchupContext game={game} />
 
-                <div className="flex flex-col gap-7">
+                <div className="flex flex-col gap-8">
                   <Tabs active={tab} onChange={setTab} />
                   <div
                     role="tabpanel"
@@ -158,9 +227,22 @@ function GameDetail() {
               </>
             )}
 
-          {stale ? (
-            <StaleNotice
-              label={`更新于 ${updatedAt ? formatUpdatedAt(updatedAt) : "—"}`}
+          {/*
+            Pre-game information comes from the schedule, and the absence of a
+            box score before tip-off is expected rather than a failed read. So
+            the provenance line only speaks up when the schedule really did not
+            answer — a schedule that is merely still loading is already said by
+            the pre-game panel, and warning about it would call a normal cold
+            start a degraded source.
+          */}
+          {data &&
+          (!preGame || (!data.freshness.scheduleOk && !data.freshness.schedulePending)) ? (
+            <FreshnessLine
+              notice={freshnessNotice(data.freshness, [
+                { status: data.game.status, startTime: data.game.startTime },
+              ])}
+              sourceAt={data.freshness.sourceAt}
+              cachedAt={data.freshness.cachedAt}
             />
           ) : null}
           </div>

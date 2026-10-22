@@ -26,12 +26,14 @@ export async function GET(request: Request) {
   }
 
   try {
-    const games = await listGames(from, to);
-    const body: GamesResponse = {
-      date,
-      games,
-      updatedAt: new Date().toISOString(),
-    };
+    // Only the reader's own "today" has a fast answer in the live feed; every
+    // other date is the schedule's job alone. So today is allowed to paint
+    // from the scoreboard and be completed on the next poll, while other dates
+    // wait for the document that can actually enumerate them.
+    const now = Date.now();
+    const coversNow = Date.parse(from) <= now && now < Date.parse(to);
+    const payload = await listGames(from, to, coversNow ? { scheduleDeadlineMs: 1_200 } : {});
+    const body: GamesResponse = { date, ...payload };
     return NextResponse.json(body, {
       headers: { "Cache-Control": "no-store" },
     });

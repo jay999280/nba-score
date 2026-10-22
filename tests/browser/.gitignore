@@ -1,0 +1,2 @@
+# Running the suite in place writes Python bytecode next to the sources.
+__pycache__/

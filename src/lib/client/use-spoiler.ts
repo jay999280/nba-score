@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 
+import { parseSpoiler } from "./storage-validators";
 import { STORAGE_KEYS } from "./storage";
 import { useStoredValue } from "./local-store";
 
@@ -19,7 +20,11 @@ const EMPTY: ReadonlySet<string> = new Set();
  * Live games are never hidden: they describe the present, not a result.
  */
 export function useSpoiler() {
-  const [enabled, setEnabled] = useStoredValue<boolean>(STORAGE_KEYS.spoiler, false);
+  const [enabled, setEnabled] = useStoredValue<boolean>(
+    STORAGE_KEYS.spoiler,
+    false,
+    parseSpoiler,
+  );
   const [revealedIds, setRevealedIds] = useState<ReadonlySet<string>>(EMPTY);
 
   const toggle = useCallback(() => {

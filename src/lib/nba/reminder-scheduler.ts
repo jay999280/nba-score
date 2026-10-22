@@ -48,7 +48,7 @@ export async function checkRemindersOnce(nowMs = Date.now()): Promise<{
   const { from, to } = checkWindow(new Date(nowMs));
   let games;
   try {
-    games = await listGames(from, to);
+    games = (await listGames(from, to)).games;
   } catch {
     return { checked: 0, sent: 0 };
   }

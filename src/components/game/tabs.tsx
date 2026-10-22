@@ -68,7 +68,7 @@ export function Tabs({ active, onChange }: TabsProps) {
                 move(-1);
               }
             }}
-            className={`flex min-h-11 items-center px-0.5 pt-2 pb-3 text-[14px] leading-none font-medium transition-colors duration-200 ${
+            className={`flex min-h-11 min-w-11 items-center justify-center px-1 pt-2 pb-3 text-body leading-none font-medium transition-colors duration-200 ${
               selected ? "text-ink" : "text-ink-3 hover:text-ink-2"
             }`}
           >

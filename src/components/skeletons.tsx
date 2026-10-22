@@ -5,7 +5,7 @@
 
 export function GameCardSkeleton() {
   return (
-    <div className="animate-fade rounded-[var(--radius-card)] border border-line bg-surface px-4 py-3.5">
+    <div className="card animate-fade px-4 py-3">
       <div className="flex flex-col gap-2">
         <TeamRowSkeleton />
         <TeamRowSkeleton />
@@ -19,7 +19,7 @@ export function GameCardSkeleton() {
 
 function TeamRowSkeleton() {
   return (
-    <div className="flex h-6 items-center gap-2.5">
+    <div className="flex h-6 items-center gap-2">
       <span className="size-[22px] shrink-0 rounded-full bg-line-strong" />
       <span className="h-3 w-24 rounded-full bg-line-strong" />
       <span className="ml-auto h-3.5 w-9 rounded-full bg-line-strong" />
@@ -30,7 +30,7 @@ function TeamRowSkeleton() {
 /** Three cards, as the home list would look on a normal day. */
 export function GameListSkeleton({ count = 3 }: { count?: number }) {
   return (
-    <div className="flex flex-col gap-2.5" aria-hidden="true">
+    <div className="flex flex-col gap-2" aria-hidden="true">
       {Array.from({ length: count }, (_, index) => (
         <GameCardSkeleton key={index} />
       ))}
@@ -45,16 +45,16 @@ export function DetailSkeleton() {
         <div className="flex flex-1 flex-col items-center gap-3">
           <span className="size-11 rounded-full bg-line-strong" />
           <span className="h-3 w-20 rounded-full bg-line-strong" />
-          <span className="h-8 w-14 rounded-lg bg-line-strong" />
+          <span className="h-8 w-14 rounded-inner bg-line-strong" />
         </div>
         <div className="flex flex-1 flex-col items-center gap-3">
           <span className="size-11 rounded-full bg-line-strong" />
           <span className="h-3 w-20 rounded-full bg-line-strong" />
-          <span className="h-8 w-14 rounded-lg bg-line-strong" />
+          <span className="h-8 w-14 rounded-inner bg-line-strong" />
         </div>
       </div>
-      <div className="h-24 rounded-[var(--radius-card)] bg-surface" />
-      <div className="h-40 rounded-[var(--radius-card)] bg-surface" />
+      <div className="card h-24" />
+      <div className="card h-40" />
     </div>
   );
 }

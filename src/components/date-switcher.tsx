@@ -9,6 +9,8 @@ interface DateSwitcherProps {
   dateKey: string;
   todayKey: string | null;
   onChange: (dateKey: string) => void;
+  /** Clears a manual date choice so the list follows today again. */
+  onToday: () => void;
 }
 
 function shiftDate(dateKey: string, days: number): string {
@@ -38,9 +40,10 @@ function relativeLabel(dateKey: string, todayKey: string | null): string {
  * Steppers and the date button all meet the 44px touch target; only the
  * chevron glyphs stay small.
  */
-export function DateSwitcher({ dateKey, todayKey, onChange }: DateSwitcherProps) {
+export function DateSwitcher({ dateKey, todayKey, onChange, onToday }: DateSwitcherProps) {
   const pickerRef = useRef<HTMLInputElement>(null);
   const date = parseLocalDateKey(dateKey);
+  const awayFromToday = todayKey !== null && dateKey !== todayKey;
 
   const openPicker = useCallback(() => {
     const input = pickerRef.current;
@@ -62,24 +65,32 @@ export function DateSwitcher({ dateKey, todayKey, onChange }: DateSwitcherProps)
         type="button"
         aria-label="前一天"
         onClick={() => onChange(shiftDate(dateKey, -1))}
-        className="-ml-2 flex size-11 items-center justify-center rounded-full text-ink-3 transition-colors hover:text-ink"
+        className="btn-ghost -ml-2"
       >
-        <ChevronLeftIcon size={17} />
+        <ChevronLeftIcon size={18} />
       </button>
 
-      <div className="relative flex items-center justify-center">
+      <div className="relative flex items-center justify-center gap-2">
         <button
           type="button"
           onClick={openPicker}
           aria-label="选择日期"
-          className="flex min-h-11 items-center gap-2 rounded-full px-3 py-1.5 transition-colors hover:bg-elevated"
+          className="flex min-h-11 items-center gap-2 rounded-full px-3 transition-colors hover:bg-elevated"
         >
-          <span className="text-[14px] leading-none font-semibold tracking-[-0.01em] text-ink">
+          <span className="text-title leading-none font-semibold tracking-[-0.01em] text-ink">
             {formatCompactDate(date)}
           </span>
-          <span className="text-[11px] leading-none text-ink-3">·</span>
+          <span className="text-micro leading-none text-ink-3">·</span>
           <span className="eyebrow text-ink-3">{relativeLabel(dateKey, todayKey) || "—"}</span>
         </button>
+
+        {/* Leaving today is easy; getting back should not require counting
+            chevrons or opening a calendar. */}
+        {awayFromToday ? (
+          <button type="button" onClick={onToday} className="btn-secondary shrink-0">
+            回今天
+          </button>
+        ) : null}
 
         <input
           ref={pickerRef}
@@ -98,9 +109,9 @@ export function DateSwitcher({ dateKey, todayKey, onChange }: DateSwitcherProps)
         type="button"
         aria-label="后一天"
         onClick={() => onChange(shiftDate(dateKey, 1))}
-        className="-mr-2 flex size-11 items-center justify-center rounded-full text-ink-3 transition-colors hover:text-ink"
+        className="btn-ghost -mr-2"
       >
-        <ChevronRightIcon size={17} />
+        <ChevronRightIcon size={18} />
       </button>
     </div>
   );

@@ -9,6 +9,11 @@
  * Tertiary text and the live accent are pinned to ≥4.5:1 against their
  * surfaces (measured, 2026-10-06): ink-3 light 4.99, ink-3 dark 5.81,
  * live light 5.47, live dark 5.81.
+ *
+ * Type runs on seven steps — micro / meta / body / title / score / display
+ * / hero (11 / 12 / 13 / 15 / 20 / 24 / 48) — declared in @theme below.
+ * Shapes use four radii (14 card, 12 inner, full, 20 sheet) and exactly
+ * one shadow.
  * ------------------------------------------------------------------ */
 
 @theme inline {
@@ -21,13 +26,49 @@
   --color-ink-2: var(--ink-2);
   --color-ink-3: var(--ink-3);
   --color-live: var(--live);
+  --color-court-line: var(--court-line);
+  --color-overlay: var(--overlay);
+  --color-control-track: var(--control-track);
+  --color-control-raised: var(--control-raised);
 
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
 
   --radius-card: 14px;
+  --radius-inner: 12px;
+  --radius-sheet: 20px;
+
+  /* The seven type steps. Every UI string uses one of these; the only two
+   * exceptions are the chart tick labels (10px) and the box-score column
+   * header (`col-label`, 0.77em of the table's own size). */
+  --text-micro: 11px;
+  --text-micro--line-height: 1;
+  --text-meta: 12px;
+  --text-meta--line-height: 1.5;
+  --text-body: 13px;
+  --text-body--line-height: 1.5;
+  --text-title: 15px;
+  --text-title--line-height: 1.3;
+  --text-score: 20px;
+  --text-score--line-height: 1;
+  --text-display: 24px;
+  --text-display--line-height: 1;
+  --text-hero: 48px;
+  --text-hero--line-height: 1;
 }
+
+/* The only shadow in the product: it lifts the selected segment, the floating
+ * notice and the switch knobs. It lives in a non-inline @theme block so
+ * `shadow-soft` is a real utility that resolves the variable at use time — a
+ * value baked into the utility would keep the light shadow in dark mode. */
+@theme {
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.07);
+}
+
+/* `dark:` follows the app's own setting (data-theme), not the OS preference,
+ * so a stored choice survives the system switching themes at sunset. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 :root {
   color-scheme: light;
@@ -41,6 +82,25 @@
   --ink-2: #6b6b70;
   --ink-3: #6f6f76;
   --live: #c62f27;
+  /* Raised controls. In light mode the track is the quiet gray and the
+   * selected item is the white surface; dark mode needs its own pair because
+   * --surface is darker than --elevated there. */
+  --control-track: #f4f4f5;
+  --control-raised: #ffffff;
+  /* Team-colour strengths, resolved with color-mix. Dark mode adds the three
+   * points so the same code keeps the same visual weight. */
+  --team-tint: 7%;
+  --live-tint: 8%;
+  --team-glow: 13%;
+  /* The scrim behind the favorites sheet. */
+  --overlay: rgba(0, 0, 0, 0.5);
+  /* Detail-page top bar: content height plus the gap a floating control
+   * leaves under it (sticky score bar, box-score header, new-plays pill). */
+  --bar-h: 44px;
+  --sticky-gap: 8px;
+  /* Court markings. `--line-strong` (16% black) was invisible as a 1px
+   * non-scaling stroke, which is how the shot chart lost its boundary. */
+  --court-line: rgba(0, 0, 0, 0.30);
 }
 
 [data-theme="dark"] {
@@ -55,6 +115,14 @@
   --ink-2: #9c9ca1;
   --ink-3: #8e8e96;
   --live: #ff453a;
+  --control-track: #141414;
+  --control-raised: #202020;
+  --team-tint: 10%;
+  --live-tint: 11%;
+  --team-glow: 16%;
+  --overlay: rgba(0, 0, 0, 0.65);
+  --court-line: rgba(255, 255, 255, 0.30);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 @layer base {
@@ -108,10 +176,207 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* The outline follows whatever radius the element already has; setting a
+   * radius here used to square off round controls while they had focus. */
   :focus-visible {
     outline: 2px solid var(--ink);
     outline-offset: 2px;
-    border-radius: 6px;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Shared component classes (UI audit §4–§7).
+ *
+ * The audit found the same handful of utilities re-typed by hand in every
+ * component: the card, the three button weights, the filter chip, the
+ * two-way segmented control, the provenance notice and the empty/error
+ * panel. They live here once. Because these sit in the components layer,
+ * any utility (e.g. `hover:bg-elevated`, `min-h-11`) still wins where a
+ * screen needs an exception.
+ * ------------------------------------------------------------------ */
+@layer components {
+  /* The one card shell. Padding stays per use: `px-4 py-3` for a list row,
+   * `px-6 py-12` for a state panel. */
+  .card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card, 14px);
+    background-color: var(--surface);
+  }
+
+  /* The only two tinted cards: a live game, and a game with a followed team.
+   * The component passes the team colour in as `--team`. */
+  .card[data-tint="live"] {
+    background-color: color-mix(in srgb, var(--live) var(--live-tint, 8%), var(--surface));
+  }
+
+  .card[data-tint="favorite"] {
+    background-color: color-mix(in srgb, var(--team, transparent) var(--team-tint, 7%), var(--surface));
+  }
+
+  /* Buttons. The 44px touch target is structural, not per screen; the three
+   * weights differ only in colour and border. */
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    border-radius: 9999px;
+    font-size: var(--text-body, 13px);
+    font-weight: 500;
+    line-height: 1;
+    transition-property: color, background-color, border-color, opacity, scale;
+    transition-duration: 150ms;
+  }
+
+  .btn-primary {
+    padding-inline: 1rem;
+    background-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .btn-primary:active,
+  .btn-secondary:active {
+    scale: 0.99;
+  }
+
+  .btn-secondary {
+    padding-inline: 1rem;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-2);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--elevated);
+    color: var(--ink);
+  }
+
+  .btn-ghost {
+    width: 44px;
+    color: var(--ink-3);
+  }
+
+  .btn-ghost:hover {
+    background-color: var(--elevated);
+    color: var(--ink);
+  }
+
+  /* A filter chip: one of many, or an on/off toggle. The selected state is
+   * read off `aria-pressed`, so the DOM stays the single source of truth. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding-inline: 0.75rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 9999px;
+    color: var(--ink-2);
+    font-size: var(--text-body, 13px);
+    font-weight: 500;
+    line-height: 1;
+    transition-property: color, background-color, border-color;
+    transition-duration: 150ms;
+  }
+
+  .chip:hover {
+    color: var(--ink);
+  }
+
+  .chip[aria-pressed="true"] {
+    border-color: var(--ink);
+    background-color: var(--ink);
+    color: var(--bg);
+  }
+
+  /* A two-way segmented control (全部/关注, 东部/西部, 球队 A/B). The track and
+   * the raised item are tokens because --surface and --elevated invert in
+   * dark mode. The 2px inset is the one optical step allowed off the 4px grid. */
+  .segmented-track {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    border-radius: 9999px;
+    background-color: var(--control-track);
+  }
+
+  .segmented-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding-inline: 0.75rem;
+    border-radius: 9999px;
+    color: var(--ink-3);
+    font-size: var(--text-body, 13px);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    transition-property: color, background-color, box-shadow;
+    transition-duration: 150ms;
+  }
+
+  .segmented-item:hover {
+    color: var(--ink-2);
+  }
+
+  .segmented-item[aria-selected="true"] {
+    background-color: var(--control-raised);
+    color: var(--ink);
+    box-shadow: var(--shadow-soft, 0 1px 2px rgba(0, 0, 0, 0.07));
+  }
+
+  [data-theme="dark"] .segmented-item[aria-selected="true"] {
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  /* The provenance notice. `data-tone` carries the exception: "stale" borrows
+   * the live red, "strong" is the unavailable / offline tone. 8/12 padding
+   * matches today's FreshnessLine so Phase B is a class swap, not a resize. */
+  .notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card, 14px);
+    background-color: var(--elevated);
+    color: var(--ink-2);
+    font-size: var(--text-meta, 12px);
+    line-height: 1.5;
+  }
+
+  .notice[data-tone="strong"] {
+    border-color: var(--line-strong);
+  }
+
+  .notice[data-tone="stale"] {
+    border-color: color-mix(in srgb, var(--live) 40%, transparent);
+    background-color: color-mix(in srgb, var(--live) 5%, transparent);
+  }
+
+  /* Empty, error and "not published yet" panels. One geometry for all three;
+   * the title colour and the action are what differ. */
+  .state-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 3rem 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card, 14px);
+    background-color: var(--surface);
+    text-align: center;
   }
 }
 
@@ -149,17 +414,6 @@
   }
 }
 
-@keyframes score-in {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 @utility animate-rise {
   animation: rise-in 0.2s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
@@ -170,10 +424,6 @@
 
 @utility animate-breathe {
   animation: breathe 2.4s ease-in-out infinite;
-}
-
-@utility animate-score {
-  animation: score-in 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 @utility tnum {
@@ -190,9 +440,14 @@
   text-transform: uppercase;
 }
 
-/* Table column headers: a step smaller so eight columns fit a 375px screen. */
+/* Table column headers: a step smaller so eight columns fit a 375px screen.
+ *
+ * `em`, not `px`: this utility is used only by the box-score header, where the
+ * columns are declared in `em` of the table's own base size, so the label has
+ * to grow with that base size (0.77 × 13px = 10px at the default root) instead
+ * of staying at 10px while the numbers and their columns grow around it. */
 @utility col-label {
-  font-size: 10px;
+  font-size: 0.77em;
   line-height: 1;
   font-weight: 520;
   letter-spacing: 0.02em;

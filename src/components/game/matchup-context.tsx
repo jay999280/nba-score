@@ -11,7 +11,7 @@ export function MatchupContext({ game }: { game: GameDetail }) {
   const { home, away, seriesHome, seriesAway, meetings } = game.matchup;
 
   return (
-    <section aria-label="交手与近况" className="border-y border-line py-3.5">
+    <section aria-label="交手与近况" className="border-y border-line py-4">
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
         <FormColumn team={game.away} form={away} align="left" />
         <span className="eyebrow px-1 text-center text-ink-3">
@@ -56,8 +56,8 @@ function FormColumn({
 }) {
   const streak = streakText(form.streak);
   return (
-    <div className={`flex min-w-0 flex-col gap-1.5 ${align === "right" ? "items-end" : "items-start"}`}>
-      <span className="truncate text-[12px] leading-none font-medium text-ink-2">
+    <div className={`flex min-w-0 flex-col gap-2 ${align === "right" ? "items-end" : "items-start"}`}>
+      <span className="truncate text-meta leading-none font-medium text-ink-2">
         {team.name}
       </span>
       {form.last5.length > 0 ? (
@@ -66,11 +66,11 @@ function FormColumn({
             <FormDot key={index} result={result} />
           ))}
           {streak ? (
-            <span className="tnum ml-1.5 text-[11px] leading-none text-ink-3">{streak}</span>
+            <span className="tnum ml-2 text-micro leading-none text-ink-3">{streak}</span>
           ) : null}
         </span>
       ) : (
-        <span className="text-[11px] leading-none text-ink-3">暂无近况</span>
+        <span className="text-micro leading-none text-ink-3">暂无近况</span>
       )}
     </div>
   );

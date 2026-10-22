@@ -64,7 +64,15 @@ export function teamCityZh(tricode: string, fallback: string): string {
   return TEAMS[tricode]?.cityZh ?? fallback;
 }
 
+/**
+ * Crest URL.
+ *
+ * These are bundled static assets, not a server route (v0.9). The Android
+ * bundle has no server, so the old `/api/logo/<id>` proxy resolved to nothing
+ * inside the APK and every crest rendered broken. The files live in
+ * `public/logos/`, were fetched once by `scripts/fetch-team-logos.mjs`, and a
+ * missing one degrades to the tricode in `<TeamLogo>` rather than a hole.
+ */
 export function teamLogo(teamId: number): string {
-  // Served from our own origin, never straight from the NBA CDN (PRD §25).
-  return `/api/logo/${teamId}`;
+  return `/logos/${teamId}.svg`;
 }

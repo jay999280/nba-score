@@ -1,0 +1,7 @@
+# Runtime artifacts — not committed.
+#
+# `python tests/browser/run.py` writes screenshots, the result JSON and the dev
+# server log here. This file keeps the directory in git while ignoring its
+# contents, so a run never turns into a diff.
+*
+!.gitignore

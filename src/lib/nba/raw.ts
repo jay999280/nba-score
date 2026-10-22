@@ -97,6 +97,7 @@ export interface RawScheduleGame {
 }
 
 export interface RawSchedule {
+  meta?: { time?: string };
   leagueSchedule: {
     seasonYear: string;
     leagueId: string;

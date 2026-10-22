@@ -51,11 +51,11 @@ export function ReminderSettings({ favoriteIds, push }: ReminderSettingsProps) {
         aria-checked={subscribed}
         onClick={handleMasterToggle}
         disabled={push.busy}
-        className="flex min-h-11 w-full items-center justify-between gap-3 text-left disabled:opacity-60"
+        className="flex min-h-11 w-full items-center justify-between gap-3 text-left disabled:opacity-50"
       >
         <span>
-          <span className="block text-[14px] font-medium text-ink">比赛提醒</span>
-          <span className="mt-1 block text-[12px] leading-relaxed text-ink-3">
+          <span className="block text-title font-medium text-ink">比赛提醒</span>
+          <span className="mt-1 block text-meta leading-relaxed text-ink-3">
             {push.permission === "denied"
               ? "通知权限已被关闭，请在浏览器设置中允许本站通知"
               : "关注球队开赛前和完赛时推送通知"}
@@ -68,7 +68,7 @@ export function ReminderSettings({ favoriteIds, push }: ReminderSettingsProps) {
           }`}
         >
           <span
-            className={`absolute top-1 size-5 rounded-full bg-surface shadow transition-all ${
+            className={`absolute top-1 size-5 rounded-full bg-control-raised shadow-[var(--shadow-soft)] transition-all ${
               subscribed ? "left-6" : "left-1"
             }`}
           />
@@ -76,7 +76,7 @@ export function ReminderSettings({ favoriteIds, push }: ReminderSettingsProps) {
       </button>
 
       {showFollowHint && !subscribed ? (
-        <p className="animate-fade mt-2 text-[12px] text-ink-2">先在下方关注至少一支球队</p>
+        <p className="animate-fade mt-2 text-meta text-ink-2">先在下方关注至少一支球队</p>
       ) : null}
 
       {subscribed && settings ? (
@@ -90,11 +90,7 @@ export function ReminderSettings({ favoriteIds, push }: ReminderSettingsProps) {
                   type="button"
                   onClick={() => patch({ leadMinutes: minutes })}
                   aria-pressed={selected}
-                  className={`min-h-9 flex-1 rounded-full border text-[13px] font-medium transition-colors ${
-                    selected
-                      ? "border-ink bg-ink text-bg"
-                      : "border-line-strong text-ink-2 hover:text-ink"
-                  }`}
+                  className="chip flex-1"
                 >
                   开赛前{minutes}分钟
                 </button>
@@ -116,9 +112,9 @@ export function ReminderSettings({ favoriteIds, push }: ReminderSettingsProps) {
                 aria-checked={settings[key]}
                 aria-label={label}
                 onClick={() => patch({ [key]: !settings[key] } as Partial<ReminderSettings>)}
-                className="flex min-h-10 items-center justify-between py-1 text-left"
+                className="flex min-h-11 items-center justify-between py-1 text-left"
               >
-                <span className="text-[13.5px] text-ink-2">{label}</span>
+                <span className="text-body text-ink-2">{label}</span>
                 <span
                   aria-hidden="true"
                   className={`relative h-6 w-10 shrink-0 rounded-full transition-colors ${
@@ -126,7 +122,7 @@ export function ReminderSettings({ favoriteIds, push }: ReminderSettingsProps) {
                   }`}
                 >
                   <span
-                    className={`absolute top-0.5 size-5 rounded-full bg-surface shadow transition-all ${
+                    className={`absolute top-0.5 size-5 rounded-full bg-control-raised shadow-[var(--shadow-soft)] transition-all ${
                       settings[key] ? "left-[18px]" : "left-0.5"
                     }`}
                   />

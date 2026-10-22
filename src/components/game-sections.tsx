@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-import type { Game, GameStatus } from "@/lib/types";
+import type { Game, GameStatus, StandingsResponse } from "@/lib/types";
 import { GameCard } from "./game-card";
 
 const SECTIONS: { status: GameStatus; title: string }[] = [
@@ -13,14 +13,15 @@ const SECTIONS: { status: GameStatus; title: string }[] = [
 
 interface GameSectionsProps {
   games: Game[];
+  standings?: StandingsResponse | null;
   /** Team ids the user follows, used only for ordering and a quiet accent. */
   favorites: Set<number>;
   /** Spoiler mode: hide finished games until revealed (PRD §17, v0.2). */
   spoilerEnabled: boolean;
   isRevealed: (gameId: string) => boolean;
   onReveal: (gameId: string) => void;
-  /** Epoch ms of the payload, so live clocks resync on every poll. */
-  updatedAtMs?: number;
+  /** Records the reading position so the detail page can send the reader back. */
+  onOpenGame?: (gameId: string) => void;
 }
 
 /**
@@ -28,7 +29,15 @@ interface GameSectionsProps {
  * comes first — that is the entire effect of favorites in v0.1 (PRD §7, §16).
  * A section with no games renders nothing at all.
  */
-export function GameSections({ games, favorites, spoilerEnabled, isRevealed, onReveal, updatedAtMs }: GameSectionsProps) {
+export function GameSections({
+  games,
+  standings = null,
+  favorites,
+  spoilerEnabled,
+  isRevealed,
+  onReveal,
+  onOpenGame,
+}: GameSectionsProps) {
   const grouped = useMemo(() => {
     const buckets: Record<GameStatus, Game[]> = { live: [], upcoming: [], final: [] };
 
@@ -48,27 +57,28 @@ export function GameSections({ games, favorites, spoilerEnabled, isRevealed, onR
   }, [games, favorites]);
 
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-8">
       {SECTIONS.map((section) => {
         const list = grouped[section.status];
         if (list.length === 0) return null;
 
         return (
-          <section key={section.status} className="flex flex-col gap-2.5">
+          <section key={section.status} className="flex flex-col gap-2">
             <h2 className="eyebrow sticky top-0 z-10 -mx-1 bg-bg px-1 py-2 text-ink-3">
               {section.title} · {list.length}场
             </h2>
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2">
               {list.map((game) => (
                 <GameCard
                   key={game.id}
                   game={game}
+                  standings={standings}
                   favoriteColor={favoriteColorFor(game, favorites)}
                   spoilerHidden={
                     spoilerEnabled && game.status === "final" && !isRevealed(game.id)
                   }
                   onReveal={() => onReveal(game.id)}
-                  updatedAtMs={updatedAtMs}
+                  onOpen={() => onOpenGame?.(game.id)}
                 />
               ))}
             </div>

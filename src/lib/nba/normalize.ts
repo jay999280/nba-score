@@ -31,6 +31,7 @@ import {
 import { teamAccent, teamCityZh, teamLogo, teamNameZh } from "./team-meta";
 import { TEAM_CATALOG } from "./team-catalog";
 import { playerNameZh } from "./player-names";
+import { gameStageFor, gameStageLabel } from "./game-stage";
 import type {
   RawBoxScore,
   RawBoxScorePlayer,
@@ -76,7 +77,7 @@ interface TeamInput {
   losses?: number;
 }
 
-function toTeamSide(input: TeamInput, periods: PeriodScore[]): TeamSide {
+function toTeamSide(input: TeamInput, periods: PeriodScore[], includeRecord = true): TeamSide {
   const tricode = input.teamTricode;
   const city = teamCityZh(tricode, input.teamCity ?? "");
   const name = teamNameZh(tricode, input.teamName ?? "");
@@ -88,7 +89,7 @@ function toTeamSide(input: TeamInput, periods: PeriodScore[]): TeamSide {
     fullName: `${city}${name}`,
     score: typeof input.score === "number" ? input.score : null,
     winner: false,
-    record: toRecord(input.wins, input.losses),
+    record: includeRecord ? toRecord(input.wins, input.losses) : null,
     periods,
     logo: teamLogo(input.teamId),
     color: teamAccent(tricode),
@@ -165,25 +166,10 @@ function finalStatusText(period: number, regulationPeriods: number): string {
   return period > regulationPeriods ? "已结束 · 加时" : "已结束";
 }
 
-/** "Preseason" → "季前赛" (PRD §4.3 wants the stage named in the header). */
-const GAME_LABEL_ZH: Record<string, string> = {
-  Preseason: "季前赛",
-  "Regular Season": "常规赛",
-  Playoffs: "季后赛",
-  Postseason: "季后赛",
-  "NBA Cup": "NBA杯",
-  "All-Star": "全明星",
-  "NBA Finals": "总决赛",
-};
-
-function gameLabelZh(label: string | undefined): string | null {
-  if (!label) return null;
-  return GAME_LABEL_ZH[label] ?? label;
-}
-
 /** Today's live scoreboard feed — the only source of in-game scores. */
 export function normalizeScoreboardGame(raw: RawScoreboardGame): Game {
   const regulationPeriods = raw.regulationPeriods || 4;
+  const stage = gameStageFor(raw.gameId, raw.gameLabel, raw.gameSubLabel);
   const status = toStatus(raw.gameStatus);
   const clock = parseClock(raw.gameClock);
   const postponed = isPostponed(raw.gameStatusText);
@@ -191,10 +177,12 @@ export function normalizeScoreboardGame(raw: RawScoreboardGame): Game {
   const away = toTeamSide(
     { ...raw.awayTeam, score: status === "upcoming" ? null : raw.awayTeam.score },
     toPeriods(raw.awayTeam.periods),
+    stage === "regular-season",
   );
   const home = toTeamSide(
     { ...raw.homeTeam, score: status === "upcoming" ? null : raw.homeTeam.score },
     toPeriods(raw.homeTeam.periods),
+    stage === "regular-season",
   );
   markWinner(away, home, status);
 
@@ -214,7 +202,9 @@ export function normalizeScoreboardGame(raw: RawScoreboardGame): Game {
     period: raw.period || 0,
     clock,
     startTime: raw.gameTimeUTC,
-    label: gameLabelZh(raw.gameLabel),
+    label: gameStageLabel(stage, raw.gameLabel),
+    stage,
+    series: null,
     postponed,
     away,
     home,
@@ -223,16 +213,19 @@ export function normalizeScoreboardGame(raw: RawScoreboardGame): Game {
 
 /** The season schedule — the only source of the full date range. */
 export function normalizeScheduleGame(raw: RawScheduleGame): Game {
+  const stage = gameStageFor(raw.gameId, raw.gameLabel, raw.gameSubLabel);
   const status = toStatus(raw.gameStatus);
   const postponed = isPostponed(raw.gameStatusText, raw.postponedStatus);
 
   const away = toTeamSide(
     { ...raw.awayTeam, score: status === "upcoming" ? null : raw.awayTeam.score },
     [],
+    stage === "regular-season",
   );
   const home = toTeamSide(
     { ...raw.homeTeam, score: status === "upcoming" ? null : raw.homeTeam.score },
     [],
+    stage === "regular-season",
   );
   markWinner(away, home, status);
 
@@ -264,7 +257,9 @@ export function normalizeScheduleGame(raw: RawScheduleGame): Game {
     period,
     clock,
     startTime: raw.gameDateTimeUTC || raw.gameTimeUTC,
-    label: gameLabelZh(raw.gameLabel),
+    label: gameStageLabel(stage, raw.gameLabel),
+    stage,
+    series: null,
     postponed,
     away,
     home,
@@ -470,6 +465,7 @@ export interface BoxScoreContext {
  */
 export function normalizeBoxScore(raw: RawBoxScore, context: BoxScoreContext = {}): GameDetail {
   const game = raw.game;
+  const stage = gameStageFor(game.gameId, context.label);
   const regulationPeriods = game.regulationPeriods || 4;
   const status = toStatus(game.gameStatus);
   const clock = parseClock(game.gameClock);
@@ -478,10 +474,12 @@ export function normalizeBoxScore(raw: RawBoxScore, context: BoxScoreContext = {
   const away = toTeamSide(
     { ...game.awayTeam, score: status === "upcoming" ? null : game.awayTeam.score },
     toPeriods(game.awayTeam.periods),
+    stage === "regular-season",
   );
   const home = toTeamSide(
     { ...game.homeTeam, score: status === "upcoming" ? null : game.homeTeam.score },
     toPeriods(game.homeTeam.periods),
+    stage === "regular-season",
   );
   markWinner(away, home, status);
 
@@ -504,7 +502,9 @@ export function normalizeBoxScore(raw: RawBoxScore, context: BoxScoreContext = {
     period: game.period || 0,
     clock,
     startTime: context.startTime || game.gameTimeUTC,
-    label: context.label ?? null,
+    label: gameStageLabel(stage, context.label),
+    stage,
+    series: null,
     postponed,
     away,
     home,

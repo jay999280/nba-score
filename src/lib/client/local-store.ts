@@ -46,10 +46,19 @@ export function writeRaw(key: string, value: unknown): void {
   emit(key);
 }
 
-function parseRaw<T>(raw: string | null, fallback: T): T {
+function parseRaw<T>(raw: string | null, fallback: T, parse?: (value: unknown) => T): T {
   if (raw === null) return fallback;
+
+  let value: unknown;
   try {
-    return JSON.parse(raw) as T;
+    value = JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
+
+  if (!parse) return value as T;
+  try {
+    return parse(value);
   } catch {
     return fallback;
   }
@@ -58,13 +67,24 @@ function parseRaw<T>(raw: string | null, fallback: T): T {
 /**
  * `fallback` must be referentially stable (a module-level constant), because it
  * takes part in the memoization of the parsed value.
+ *
+ * `parse` is the boundary where stored bytes stop being trusted. JSON.parse
+ * only proves the value was JSON — not that it is the shape this app wrote, and
+ * a stored `{"bad":true}` used to crash the whole page (`stored.filter is not a
+ * function`). A validator turns that into a safe default. Damaged keys are
+ * ignored rather than deleted, so a bad `favoriteTeams` never takes the theme
+ * or the spoiler setting down with it.
  */
-export function useStoredValue<T>(key: string, fallback: T): [T, (next: T) => void] {
+export function useStoredValue<T>(
+  key: string,
+  fallback: T,
+  parse?: (value: unknown) => T,
+): [T, (next: T) => void] {
   const subscribe = useCallback((listener: Listener) => subscribeTo(key, listener), [key]);
   const getSnapshot = useCallback(() => readRaw(key), [key]);
 
   const raw = useSyncExternalStore(subscribe, getSnapshot, () => null);
-  const value = useMemo(() => parseRaw(raw, fallback), [raw, fallback]);
+  const value = useMemo(() => parseRaw(raw, fallback, parse), [raw, fallback, parse]);
 
   const setValue = useCallback(
     (next: T) => {

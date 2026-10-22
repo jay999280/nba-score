@@ -78,6 +78,56 @@ export function periodLabel(period: number, regulationPeriods = 4): string {
   return overtime === 1 ? "加时" : `加时${overtime}`;
 }
 
+/**
+ * Parse the NBA feeds' own `meta.time`.
+ *
+ * Upstream writes `"2026-10-10 01:14:25.1425"`: a space instead of `T`, no
+ * zone marker, and the value *is* UTC. `Date.parse` reads that form as local
+ * time, which on this device silently moved every source timestamp by eight
+ * hours — and a source time that is wrong by eight hours cannot support any
+ * "this score is stale" claim. The space form is therefore assembled
+ * explicitly with `Date.UTC`. A value that already carries `T` (upstream could
+ * change format) is handed to `Date.parse` unchanged.
+ *
+ * Returns null for anything unusable; never throws.
+ */
+export function parseUpstreamTime(value: unknown): Date | null {
+  if (typeof value !== "string") return null;
+  const raw = value.trim();
+  if (!raw) return null;
+
+  if (raw.includes("T")) {
+    const iso = new Date(raw);
+    return Number.isNaN(iso.getTime()) ? null : iso;
+  }
+
+  const match = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?$/.exec(raw);
+  if (!match) return null;
+
+  const [, yearText, monthText, dayText, hourText, minuteText, secondText, fractionText] = match;
+  const [year, month, day, hour, minute, second] = [
+    yearText,
+    monthText,
+    dayText,
+    hourText,
+    minuteText,
+    secondText,
+  ].map(Number);
+
+  if (month < 1 || month > 12) return null;
+  if (day < 1 || day > 31) return null;
+  if (hour > 23 || minute > 59 || second > 59) return null;
+
+  // `.1425` is 142.5 ms upstream; milliseconds are the finest resolution a
+  // Date can hold, so the fraction is truncated rather than rounded.
+  const milliseconds = fractionText ? Number(fractionText.slice(0, 3).padEnd(3, "0")) : 0;
+  const date = new Date(Date.UTC(year, month - 1, day, hour, minute, second, milliseconds));
+
+  // Reject a day that rolled over (2026-02-31 → March 3) instead of pretending.
+  if (date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
+  return date;
+}
+
 /** Local calendar key, `YYYY-MM-DD`. */
 export function localDateKey(date: Date): string {
   const year = date.getFullYear();
@@ -128,6 +178,42 @@ export function formatPlusMinus(value: number | null | undefined): string {
 /** "10:42" — used by the "更新于 10:42" note (PRD §33). */
 export function formatUpdatedAt(date: Date): string {
   return TIME_FORMATTER.format(date);
+}
+
+const SOURCE_FORMATTER = new Intl.DateTimeFormat("zh-CN", {
+  month: "numeric",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+});
+
+/**
+ * The upstream's own data time, as a label.
+ *
+ * Always carries the date: a line reading "更新于 01:14" under a payload that is
+ * a day old is the exact confusion this label exists to remove. Rendered in the
+ * device's zone, like every other time in the app.
+ */
+export function formatSourceAt(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const time = new Date(iso);
+  if (Number.isNaN(time.getTime())) return null;
+  return SOURCE_FORMATTER.format(time).replaceAll("/", "-");
+}
+
+/** Coarse age: "刚刚" / "42分钟前" / "5小时前" / "2天前" / "约1个月前". */
+export function formatAge(value: Date | string | number, now = Date.now()): string | null {
+  const time = value instanceof Date ? value.getTime() : new Date(value).getTime();
+  if (!Number.isFinite(time)) return null;
+  const minutes = Math.floor(Math.max(0, now - time) / 60_000);
+  if (minutes < 1) return "刚刚";
+  if (minutes < 60) return `${minutes}分钟前`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}小时前`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}天前`;
+  return `约${Math.max(1, Math.floor(days / 30))}个月前`;
 }
 
 /**

@@ -1,7 +1,7 @@
 import type { SVGProps } from "react";
 
 /**
- * Hand-rolled 1.6px stroke icons. A dozen glyphs is cheaper than an icon
+ * Hand-rolled 1.7px stroke icons. A dozen glyphs is cheaper than an icon
  * dependency, and they inherit `currentColor` so the palette stays the only
  * source of truth.
  */
@@ -69,6 +69,27 @@ export function StarIcon({ filled = false, ...props }: IconProps & { filled?: bo
   return (
     <svg {...base(props)} fill={filled ? "currentColor" : "none"} aria-hidden="true">
       <path d="M12 4.6l2.35 4.76 5.25.77-3.8 3.7.9 5.23L12 16.6l-4.7 2.47.9-5.23-3.8-3.7 5.25-.77z" />
+    </svg>
+  );
+}
+
+export function HeartIcon({ filled = false, ...props }: IconProps & { filled?: boolean }) {
+  return (
+    <svg {...base(props)} fill={filled ? "currentColor" : "none"} aria-hidden="true">
+      <path d="M12 20.2 4.9 13.4a4.3 4.3 0 0 1 0-6.2 4.5 4.5 0 0 1 6.3 0l.8.8.8-.8a4.5 4.5 0 0 1 6.3 0 4.3 4.3 0 0 1 0 6.2z" />
+    </svg>
+  );
+}
+
+export function RefreshIcon({ spinning = false, ...props }: IconProps & { spinning?: boolean }) {
+  return (
+    <svg
+      {...base(props)}
+      className={spinning ? "animate-spin" : undefined}
+      aria-hidden="true"
+    >
+      <path d="M20 11.5a8 8 0 1 1-2.4-5.7" />
+      <path d="M20 4.5v5h-5" />
     </svg>
   );
 }

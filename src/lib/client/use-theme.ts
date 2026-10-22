@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect } from "react";
 
+import { parseTheme, type Theme } from "./storage-validators";
 import { STORAGE_KEYS } from "./storage";
 import { useStoredValue } from "./local-store";
 
-export type Theme = "dark" | "light";
+export type { Theme };
 
 /** Stable fallback: `useStoredValue` memoizes on it. */
 const DEFAULT_THEME: Theme = "light";
@@ -18,8 +19,7 @@ const DEFAULT_THEME: Theme = "light";
  * head, before first paint — this effect keeps it in sync afterwards.
  */
 export function useTheme() {
-  const [stored, setStored] = useStoredValue<Theme>(STORAGE_KEYS.theme, DEFAULT_THEME);
-  const theme: Theme = stored === "light" ? "light" : "dark";
+  const [theme, setStored] = useStoredValue<Theme>(STORAGE_KEYS.theme, DEFAULT_THEME, parseTheme);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;

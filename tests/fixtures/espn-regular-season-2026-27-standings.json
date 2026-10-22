@@ -1,0 +1,1743 @@
+{
+  "season": {
+    "year": 2027,
+    "startDate": "2026-09-30T07:00Z",
+    "endDate": "2027-06-26T06:59Z",
+    "displayName": "2026-27"
+  },
+  "children": [
+    {
+      "abbreviation": "East",
+      "standings": {
+        "season": 2027,
+        "seasonType": 2,
+        "entries": [
+          {
+            "team": {
+              "abbreviation": "ATL"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "BOS"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "CHI"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "CLE"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "DET"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "IND"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "MIA"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "MIL"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "BKN"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "NY"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "ORL"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "PHI"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "WSH"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "TOR"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "CHA"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "abbreviation": "West",
+      "standings": {
+        "season": 2027,
+        "seasonType": 2,
+        "entries": [
+          {
+            "team": {
+              "abbreviation": "NO"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "DAL"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "DEN"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "GS"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "HOU"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "LAC"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "LAL"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "MIN"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "PHX"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "POR"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "SAC"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "SA"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "OKC"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "UTAH"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "MEM"
+            },
+            "stats": [
+              {
+                "name": "gamesBehind",
+                "displayName": "Games Back",
+                "shortDisplayName": "GB",
+                "description": "Games Back",
+                "abbreviation": "GB",
+                "type": "gamesbehind",
+                "value": 0.0,
+                "displayValue": "-"
+              },
+              {
+                "name": "losses",
+                "displayName": "Losses",
+                "shortDisplayName": "L",
+                "description": "Losses",
+                "abbreviation": "L",
+                "type": "losses",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "playoffSeed",
+                "displayName": "Position",
+                "shortDisplayName": "POS",
+                "description": "Projected seed in the NBA Playoffs, according to BPI",
+                "abbreviation": "SEED",
+                "type": "playoffseed",
+                "value": 0.0,
+                "displayValue": "0"
+              },
+              {
+                "name": "winPercent",
+                "displayName": "Win Percentage",
+                "shortDisplayName": "PCT",
+                "description": "Winning Percentage",
+                "abbreviation": "PCT",
+                "type": "winpercent",
+                "value": 0.0,
+                "displayValue": ".000"
+              },
+              {
+                "name": "wins",
+                "displayName": "Wins",
+                "shortDisplayName": "W",
+                "description": "Wins",
+                "abbreviation": "W",
+                "type": "wins",
+                "value": 0.0,
+                "displayValue": "0"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "_provenance": {
+    "url": "https://site.web.api.espn.com/apis/v2/sports/basketball/nba/standings?season=2027&seasontype=2",
+    "capturedDate": "2026-10-12",
+    "description": "Captured upstream JSON, irrelevant fields omitted; values unchanged."
+  }
+}

@@ -17,8 +17,7 @@ export async function GET(
   }
 
   try {
-    const plays = await getGamePlays(gameId);
-    const body: PlaysResponse = { ...plays, updatedAt: new Date().toISOString() };
+    const body: PlaysResponse = await getGamePlays(gameId);
     return NextResponse.json(body, {
       headers: { "Cache-Control": "no-store" },
     });

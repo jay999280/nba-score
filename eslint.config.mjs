@@ -12,7 +12,23 @@ const eslintConfig = defineConfig([
       "@next/next/no-img-element": "off",
     },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "_probe/**"]),
+  globalIgnores([
+    // Build output
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    // Local verification material (gitignored)
+    "_probe/**",
+    // Generated Android artifacts. `cap sync` copies the whole web bundle into
+    // the Android project, and linting that copy is what produced 10 errors and
+    // ~2000 warnings about files nobody edits by hand.
+    "android/app/src/main/assets/**",
+    "android/app/build/**",
+    "android/build/**",
+    "android/.gradle/**",
+    "android/capacitor-cordova-android-plugins/**",
+  ]),
 ]);
 
 export default eslintConfig;

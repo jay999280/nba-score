@@ -1,12 +1,13 @@
 "use client";
 
 import { Fragment } from "react";
+import type { CSSProperties } from "react";
 
 import { periodLabel } from "@/lib/format";
-import type { Game, GameStatus, TeamSide } from "@/lib/types";
+import type { Game, GameStatus, TeamSide, StandingsResponse, TeamStanding } from "@/lib/types";
+import { SeriesLine, StandingLine, standingForGame } from "../season-context";
 import { CountdownText } from "../countdown-text";
-import { LiveClock } from "../live-clock";
-import { StarIcon } from "../icons";
+import { FollowButton } from "../follow-button";
 import { Score } from "../score";
 import { TeamLogo } from "../team-logo";
 
@@ -19,13 +20,13 @@ export function ScoreHeader({
   hideScores = false,
   favorites,
   onToggleFavorite,
-  updatedAtMs,
+  standings = null,
 }: {
   game: Game;
+  standings?: StandingsResponse | null;
   hideScores?: boolean;
   favorites: Set<number>;
   onToggleFavorite: (teamId: number) => void;
-  updatedAtMs?: number;
 }) {
   return (
     <div className="flex flex-col gap-5">
@@ -33,16 +34,27 @@ export function ScoreHeader({
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
           <div
             className="absolute top-[-32px] left-[10%] size-36 rounded-full blur-3xl"
-            style={{ backgroundColor: `color-mix(in srgb, ${game.away.color} 13%, transparent)` }}
+            style={
+              {
+                "--team": game.away.color,
+                backgroundColor: "color-mix(in srgb, var(--team) var(--team-glow), transparent)",
+              } as CSSProperties
+            }
           />
           <div
             className="absolute top-[-32px] right-[10%] size-36 rounded-full blur-3xl"
-            style={{ backgroundColor: `color-mix(in srgb, ${game.home.color} 13%, transparent)` }}
+            style={
+              {
+                "--team": game.home.color,
+                backgroundColor: "color-mix(in srgb, var(--team) var(--team-glow), transparent)",
+              } as CSSProperties
+            }
           />
         </div>
         <div className="relative flex items-start justify-between gap-6 pt-1">
           <TeamColumn
             team={game.away}
+            standing={standingForGame(game, game.away.id, standings)}
             status={game.status}
             hideScores={hideScores}
             followed={favorites.has(game.away.id)}
@@ -50,6 +62,7 @@ export function ScoreHeader({
           />
           <TeamColumn
             team={game.home}
+            standing={standingForGame(game, game.home.id, standings)}
             status={game.status}
             hideScores={hideScores}
             followed={favorites.has(game.home.id)}
@@ -57,19 +70,22 @@ export function ScoreHeader({
           />
         </div>
       </div>
-      <DetailStatusLine game={game} updatedAtMs={updatedAtMs} />
+      <DetailStatusLine game={game} />
+      <div className="text-center"><SeriesLine game={game} hidden={hideScores} /></div>
     </div>
   );
 }
 
 function TeamColumn({
   team,
+  standing,
   status,
   hideScores = false,
   followed,
   onToggleFollow,
 }: {
   team: TeamSide;
+  standing: TeamStanding | null;
   status: GameStatus;
   hideScores?: boolean;
   followed: boolean;
@@ -78,57 +94,43 @@ function TeamColumn({
   const muted = status === "final" && !team.winner && !hideScores;
 
   return (
-    <div className="flex flex-1 flex-col items-center gap-2.5">
+    <div className="flex flex-1 flex-col items-center gap-2">
       <TeamLogo team={team} size={56} dimmed={muted} />
       <span
-        className={`text-center text-[15px] leading-none font-medium ${
+        className={`text-center text-title leading-none font-medium ${
           muted ? "text-ink-2" : "text-ink"
         }`}
       >
         {team.name}
       </span>
       <span
-        className={`flex h-[48px] items-center text-[48px] leading-none font-semibold tracking-[-0.035em] ${
+        className={`flex h-12 items-center text-hero leading-none font-semibold tracking-[-0.035em] ${
           muted ? "text-ink-2" : "text-ink"
         }`}
       >
         {!hideScores ? <Score value={team.score} /> : null}
       </span>
-      {!hideScores && team.record ? (
-        <span className="tnum text-[11px] leading-none text-ink-3">{team.record}</span>
-      ) : null}
-      <button
-        type="button"
-        onClick={onToggleFollow}
-        aria-pressed={followed}
-        aria-label={followed ? `取消关注${team.name}` : `关注${team.name}`}
-        className={`mt-0.5 flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-[12px] leading-none font-medium transition-colors ${
-          followed
-            ? "border-ink bg-ink text-bg"
-            : "border-line-strong text-ink-2 hover:text-ink"
-        }`}
-      >
-        <StarIcon size={12} filled={followed} />
-        {followed ? "已关注" : "关注"}
-      </button>
+      <StandingLine standing={standing} hidden={hideScores} />
+      <FollowButton
+        team={team}
+        followed={followed}
+        onToggle={onToggleFollow}
+        className="mt-0.5"
+      />
     </div>
   );
 }
 
-function DetailStatusLine({ game, updatedAtMs }: { game: Game; updatedAtMs?: number }) {
+function DetailStatusLine({ game }: { game: Game }) {
   if (game.status === "live") {
     return (
       <div className="flex items-center justify-center gap-2">
         <span className="animate-breathe size-1.5 rounded-full bg-live" />
         <span className="eyebrow text-live">进行中</span>
-        <span className="text-[11px] leading-none text-ink-3">·</span>
-        {game.clock && game.period > 0 && updatedAtMs ? (
-          <span className="eyebrow text-ink-2">
-            {periodLabel(game.period)} · <LiveClock key={updatedAtMs} clock={game.clock} />
-          </span>
-        ) : (
-          <span className="eyebrow text-ink-2">{game.statusText}</span>
-        )}
+        <span className="text-micro leading-none text-ink-3">·</span>
+        {/* Exactly what the source said: the payload carries no trustworthy
+            "clock is running" flag, so a local countdown would be invented. */}
+        <span className="eyebrow tnum text-ink-2">{game.statusText}</span>
       </div>
     );
   }
@@ -153,7 +155,7 @@ function DetailStatusLine({ game, updatedAtMs }: { game: Game; updatedAtMs?: num
     <div className="flex justify-center">
       <CountdownText
         startTime={game.startTime}
-        className="tnum text-[14px] leading-none font-medium text-ink-2"
+        className="tnum text-body leading-none font-medium text-ink-2"
       />
     </div>
   );
@@ -170,7 +172,7 @@ export function PeriodTable({ game }: { game: Game }) {
 
   return (
     <div
-      className="grid items-center gap-y-2.5"
+      className="grid items-center gap-y-2"
       style={{ gridTemplateColumns: `42px repeat(${periods}, minmax(0, 1fr)) 48px` }}
     >
       <span aria-hidden="true" />
@@ -183,14 +185,14 @@ export function PeriodTable({ game }: { game: Game }) {
 
       {[game.away, game.home].map((team) => (
         <Fragment key={team.id}>
-          <span className="text-[13px] leading-none font-medium text-ink-2">{team.tricode}</span>
+          <span className="text-body leading-none font-medium text-ink-2">{team.tricode}</span>
           {columns.map((period) => (
-            <span key={period} className="tnum text-center text-[14px] leading-none text-ink-2">
+            <span key={period} className="tnum text-center text-body leading-none text-ink-2">
               {scoreInPeriod(team, period)}
             </span>
           ))}
           <span
-            className={`tnum text-right text-[15px] leading-none font-semibold ${
+            className={`tnum text-right text-title leading-none font-semibold ${
               team.winner ? "text-ink" : "text-ink-2"
             }`}
           >
