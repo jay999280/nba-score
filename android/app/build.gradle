@@ -16,7 +16,26 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        // A debug key committed with the project.
+        //
+        // AGP normally generates a throwaway debug keystore on every machine,
+        // which means a CI-built APK cannot install over a locally built one:
+        // Android refuses the update with a signature mismatch. Since this app
+        // is side-loaded (and a debug keystore is not a secret — the password
+        // is literally "android"), pinning it here is what lets the in-app
+        // "new version" prompt actually install.
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
